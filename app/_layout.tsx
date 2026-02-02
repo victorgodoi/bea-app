@@ -10,10 +10,6 @@ import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
-
 const { width } = Dimensions.get('window');
 
 export default function RootLayout() {
@@ -41,9 +37,10 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="auth" />
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal', headerShown: true }} />
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>
