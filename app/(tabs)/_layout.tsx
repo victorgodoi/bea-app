@@ -17,7 +17,19 @@ function TabLayoutContent() {
     <View style={styles.drawerContent}>
       <Text style={styles.drawerTitle}>Olá, UserName!</Text>
       <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+        <Text style={styles.drawerItemText}>Meus Dados</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
         <Text style={styles.drawerItemText}>Dependentes</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+        <Text style={styles.drawerItemText}>Contas</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+        <Text style={styles.drawerItemText}>Categorias</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+        <Text style={styles.drawerItemText}>Tags</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
         <Text style={styles.drawerItemText}>Configurações</Text>
@@ -44,10 +56,17 @@ function TabLayoutContent() {
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Home',
+            title: 'Principal',
             tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
           }}
         />
+        {/* <Tabs.Screen
+          name="transactions"
+          options={{
+            title: 'Transações',
+            tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          }}
+        /> */}
         <Tabs.Screen
           name="explore"
           options={{
