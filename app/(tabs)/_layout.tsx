@@ -1,5 +1,5 @@
 import { Drawer } from '@ant-design/react-native';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -12,31 +12,45 @@ import { DrawerProvider, useDrawer } from '@/src/contexts/DrawerContext';
 function TabLayoutContent() {
   const colorScheme = useColorScheme();
   const { isDrawerOpen, closeDrawer } = useDrawer();
+  const router = useRouter();
 
   const sidebar = (
     <View style={styles.drawerContent}>
-      <Text style={styles.drawerTitle}>Olá, UserName!</Text>
-      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
-        <Text style={styles.drawerItemText}>Meus Dados</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
-        <Text style={styles.drawerItemText}>Dependentes</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
-        <Text style={styles.drawerItemText}>Contas</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
-        <Text style={styles.drawerItemText}>Categorias</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
-        <Text style={styles.drawerItemText}>Tags</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
-        <Text style={styles.drawerItemText}>Configurações</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
-        <Text style={styles.drawerItemText}>Sobre</Text>
-      </TouchableOpacity>
+      <View>
+        <Text style={styles.drawerTitle}>Olá, UserName!</Text>
+        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+          <Text style={styles.drawerItemText}>Meus Dados</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+          <Text style={styles.drawerItemText}>Dependentes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+          <Text style={styles.drawerItemText}>Contas</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+          <Text style={styles.drawerItemText}>Categorias</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+          <Text style={styles.drawerItemText}>Tags</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+          <Text style={styles.drawerItemText}>Configurações</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+          <Text style={styles.drawerItemText}>Sobre</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <TouchableOpacity
+          style={{ paddingBottom: 30, paddingTop: 15 }}
+          onPress={() => {
+            closeDrawer();
+            router.replace('/auth');
+          }}
+        >
+          <Text style={styles.drawerItemText}>Deslogar</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -93,6 +107,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
     paddingTop: 60,
+    justifyContent: "space-between",
   },
   drawerTitle: {
     fontSize: 24,
