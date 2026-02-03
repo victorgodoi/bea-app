@@ -7,12 +7,20 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useAuth } from '@/src/contexts/AuthContext';
 import { DrawerProvider, useDrawer } from '@/src/contexts/DrawerContext';
 
 function TabLayoutContent() {
   const colorScheme = useColorScheme();
   const { isDrawerOpen, closeDrawer } = useDrawer();
   const router = useRouter();
+  const { setUser } = useAuth();
+
+  const handleLogout = async () => {
+    await setUser(null);
+    closeDrawer();
+    router.replace('/auth');
+  };
 
   const sidebar = (
     <View style={styles.drawerContent}>
@@ -43,10 +51,7 @@ function TabLayoutContent() {
       <View>
         <TouchableOpacity
           style={{ paddingBottom: 30, paddingTop: 15 }}
-          onPress={() => {
-            closeDrawer();
-            router.replace('/auth');
-          }}
+          onPress={handleLogout}
         >
           <Text style={styles.drawerItemText}>Deslogar</Text>
         </TouchableOpacity>

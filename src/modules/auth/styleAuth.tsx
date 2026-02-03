@@ -25,6 +25,7 @@ export const FormContainer = styled.View`
   border-width: 2px;
   border-color: #FFF;
   border-style: solid;
+  margin-bottom: 40px;
 `;
 
 export const TabContainer = styled.View`

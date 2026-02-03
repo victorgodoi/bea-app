@@ -1,34 +1,104 @@
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ImageBackground,
-  Platform,
-  ScrollView,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity
 } from 'react-native';
-import { Container, FormContainer, InputContainer, InputWrapper, Label, LogoContainer, TabContainer } from './styleAuth';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Dialog } from '../../components/dialog';
+import { useAuth } from '../../contexts/AuthContext';
+import { signInUser, signUpUser } from '../../services/auth.service';
+import {
+  FormContainer,
+  InputContainer,
+  InputWrapper,
+  Label,
+  LogoContainer,
+  TabContainer
+} from './styleAuth';
 
 const { width, height } = Dimensions.get('window');
 
 export default function AuthScreen() {
   const router = useRouter();
-  const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [name, setName] = useState('');
+  const { setUser } = useAuth();
+  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [dialogContent, setDialogContent] = useState<string>('');
+  const [dialogAction, setDialogAction] = useState<(() => void) | undefined>(undefined);
 
-  const handleAuth = () => {
-    // Aqui você pode adicionar a lógica de autenticação
-    console.log(isLogin ? 'Login' : 'Cadastro', { email, password, name });
-    // Por enquanto, apenas navega para as tabs
-    router.replace('/(tabs)');
+  const showDialog = (content: string, action?: () => void) => {
+    setDialogContent(content);
+    setDialogAction(() => action);
+    setDialogVisible(true);
   };
+
+  const hideDialog = () => {
+    setDialogVisible(false);
+    if (dialogAction) {
+      dialogAction();
+      setDialogAction(undefined);
+    }
+  };
+
+  const handleAuth = async () => {
+    if (loading) return;
+
+    try {
+      setLoading(true);
+
+      if (isLogin) {
+        // Login
+        const data = await signInUser({ email, password });
+        await setUser({ 
+          email: data.user?.email || email,
+          name: data.user?.user_metadata?.name 
+        });
+        router.replace('/(tabs)');
+      } else {
+        // Cadastro
+        if (password !== confirmPassword) {
+          showDialog('As senhas não conferem');
+          return;
+        }
+
+        const data = await signUpUser({ name, email, password });
+        await setUser({ 
+          email: data.user?.email || email,
+          name: data.user?.user_metadata?.name || name
+        });
+        showDialog(
+          'Cadastro realizado com sucesso!',
+          () => router.replace('/(tabs)')
+        );
+      }
+    } catch (error: any) {
+      console.error('Erro na autenticação:', error);
+      showDialog(error.message || 'Ocorreu um erro ao processar sua solicitação');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    Keyboard.dismiss();
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setName('');
+  }, [isLogin]);
 
   return (
     <ImageBackground
@@ -36,14 +106,15 @@ export default function AuthScreen() {
       style={styles.background}
       resizeMode="cover"
     >
-      <Container
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        enableOnAndroid={true}
+        enableAutomaticScroll={true}
+        extraScrollHeight={height * 0.15}
+        keyboardOpeningTime={0}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
           <LogoContainer>
             <Image
               source={require("../../../assets/images/iconBea.png")}
@@ -131,15 +202,29 @@ export default function AuthScreen() {
                 </TouchableOpacity>
               )} */}
 
-              <TouchableOpacity style={styles.button} onPress={handleAuth}>
-                <Text style={styles.buttonText}>
-                  {isLogin ? 'Entrar' : 'Cadastrar'}
-                </Text>
+              <TouchableOpacity 
+                style={[styles.button, loading && styles.buttonDisabled]} 
+                onPress={handleAuth}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#c43edf" />
+                ) : (
+                  <Text style={styles.buttonText}>
+                    {isLogin ? 'Entrar' : 'Cadastrar'}
+                  </Text>
+                )}
               </TouchableOpacity>
             </InputContainer>
           </FormContainer>
-        </ScrollView>
-      </Container>
+        </KeyboardAwareScrollView>
+
+      <Dialog
+        visible={dialogVisible}
+        content={dialogContent}
+        confirmText="OK"
+        onConfirm={hideDialog}
+      />
     </ImageBackground>
   );
 }
@@ -206,6 +291,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 4,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#c43edf',
