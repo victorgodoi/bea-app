@@ -1,21 +1,19 @@
-import { useDrawer } from "@/src/contexts/DrawerContext";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Image, TouchableOpacity, View } from "react-native";
-import { BoxHeader } from "./styleHeader";
+import { BackButton, BoxHeader } from "./styleHeaderSecundary";
 
-export const Header = () => {
-  const { openDrawer } = useDrawer();
+export const HeaderSecundary = () => {
   const router = useRouter();
 
   return (
     <BoxHeader>
-      <TouchableOpacity onPress={openDrawer}>
-        <AntDesign name="menu" size={32} color="#fff" />
-      </TouchableOpacity>
+      <BackButton onPress={() => router.back()}>
+        <AntDesign name="arrow-left" size={24} color="#fff" />
+      </BackButton>
       <TouchableOpacity onPress={() => { router.replace('/') }}>
         <Image
-          source={require("../../../assets/images/iconBea.png")}
+          source={require('@/assets/images/iconBea.png')}
           style={{ width: 64, height: 64 }}
         />
       </TouchableOpacity>
