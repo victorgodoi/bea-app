@@ -91,3 +91,41 @@ export async function signOut() {
     throw error;
   }
 }
+
+export async function getUserProfile(email: string) {
+  try {
+    const { data, error } = await supabase
+      .from('users_profile')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error('Erro ao buscar perfil do usuário:', error);
+    throw error;
+  }
+}
+
+export async function getUserProfileById(id: string) {
+  try {
+    const { data, error } = await supabase
+      .from('users_profile')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error('Erro ao buscar perfil do usuário por ID:', error);
+    throw error;
+  }
+}

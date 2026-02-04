@@ -1,6 +1,6 @@
 import { Drawer } from '@ant-design/react-native';
 import { Tabs, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
@@ -9,12 +9,30 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { DrawerProvider, useDrawer } from '@/src/contexts/DrawerContext';
+import { getUserProfile } from '@/src/services/auth.service';
 
 function TabLayoutContent() {
   const colorScheme = useColorScheme();
   const { isDrawerOpen, closeDrawer } = useDrawer();
   const router = useRouter();
-  const { setUser } = useAuth();
+  const { user, setUser } = useAuth();
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    async function loadProfile() {
+      if (user?.email) {
+        try {
+          const userProfile = await getUserProfile(user.email);
+          setProfile(userProfile);
+          console.log('User profile in layout:', userProfile);
+        } catch (error) {
+          console.error('Erro ao carregar perfil:', error);
+        }
+      }
+    }
+
+    loadProfile();
+  }, [user]);
 
   const handleLogout = async () => {
     await setUser(null);
@@ -25,7 +43,7 @@ function TabLayoutContent() {
   const sidebar = (
     <View style={styles.drawerContent}>
       <View>
-        <Text style={styles.drawerTitle}>Olá, UserName!</Text>
+        <Text style={styles.drawerTitle}>Olá, {profile?.name}!</Text>
         <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
           <Text style={styles.drawerItemText}>Meus Dados</Text>
         </TouchableOpacity>
@@ -53,7 +71,7 @@ function TabLayoutContent() {
           style={{ paddingBottom: 30, paddingTop: 15 }}
           onPress={handleLogout}
         >
-          <Text style={styles.drawerItemText}>Deslogar</Text>
+          <Text style={{ fontSize: 16, color: "red", fontWeight: "bold" }}>Deslogar</Text>
         </TouchableOpacity>
       </View>
     </View>
