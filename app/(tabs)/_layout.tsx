@@ -44,7 +44,16 @@ function TabLayoutContent() {
     <View style={styles.drawerContent}>
       <View>
         <Text style={styles.drawerTitle}>Olá, {profile?.name}!</Text>
-        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.drawerItem} onPress={() => {
+          closeDrawer();
+          router.push({
+            pathname: '/edit-profile',
+            params: { 
+              name: profile?.name || '',
+              email: profile?.email || user?.email || ''
+            }
+          });
+        }}>
           <Text style={styles.drawerItemText}>Meus Dados</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
