@@ -8,7 +8,12 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test:connection": "tsx scripts/tests/test-supabase-connection.ts",
+    "test:database": "tsx scripts/tests/check-database.ts",
+    "test:tables": "tsx scripts/tests/list-tables.ts",
+    "test:mcp": "tsx scripts/tests/test-mcp.ts",
+    "test:supabase": "npm run test:connection && npm run test:tables && npm run test:mcp"
   },
   "dependencies": {
     "@ant-design/icons-react-native": "^2.3.2",
@@ -50,6 +55,7 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "eslint-import-resolver-typescript": "^4.4.4",
+    "tsx": "^4.21.0",
     "typescript": "~5.9.2"
   },
   "private": true
