@@ -7,10 +7,11 @@ import {
   SecondaryButton,
 } from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useNotification } from '@/src/contexts/NotificationContext';
 import { updateUserProfile } from '@/src/services/auth.service';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FormContainer } from './styleEditProfile';
 
@@ -18,6 +19,7 @@ export default function EditProfileScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { setUser } = useAuth();
+  const { success, error } = useNotification();
   const [userId, setUserId] = useState<string | null>(null);
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -35,12 +37,12 @@ export default function EditProfileScreen() {
 
     // Validações básicas
     if (!name.trim()) {
-      Alert.alert('Erro', 'O nome não pode estar vazio');
+      error('Erro', 'O nome não pode estar vazio');
       return;
     }
 
     if (!email.trim()) {
-      Alert.alert('Erro', 'O email não pode estar vazio');
+      error('Erro', 'O email não pode estar vazio');
       return;
     }
 
@@ -59,21 +61,16 @@ export default function EditProfileScreen() {
         name: updatedProfile.name,
       });
 
-      Alert.alert(
+      success(
         'Sucesso',
         'Perfil atualizado com sucesso!',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.back(),
-          },
-        ]
+        () => router.back()
       );
-    } catch (error: any) {
-      console.error('Erro ao atualizar perfil:', error);
-      Alert.alert(
+    } catch (err: any) {
+      console.error('Erro ao atualizar perfil:', err);
+      error(
         'Erro',
-        error.message || 'Não foi possível atualizar o perfil. Tente novamente.'
+        err.message || 'Não foi possível atualizar o perfil. Tente novamente.'
       );
     } finally {
       setLoading(false);
