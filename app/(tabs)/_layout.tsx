@@ -50,7 +50,8 @@ function TabLayoutContent() {
             pathname: '/edit-profile',
             params: { 
               name: profile?.name || '',
-              email: profile?.email || user?.email || ''
+              email: profile?.email || user?.email || '',
+              id: profile?.id || '',
             }
           });
         }}>

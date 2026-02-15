@@ -1,8 +1,11 @@
 import { HeaderSecundary } from '@/src/components/headerSecundary';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { updateUserProfile } from '@/src/services/auth.service';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   SafeAreaView,
   StyleSheet,
   TextInput,
@@ -14,19 +17,68 @@ import { CancelButton, CancelButtonText, Footer, FormContainer, InputWrapper, La
 export default function EditProfileScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { setUser } = useAuth();
+  const [userId, setUserId] = useState<string | null>(null);
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  console.log('userId: ', userId);
 
   useEffect(() => {
     if (params.name) setName(params.name as string);
     if (params.email) setEmail(params.email as string);
+    if (params.id) setUserId(params.id as string);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSave = async () => {
-    if (loading) return;
-    // Lógica será implementada posteriormente
-    console.log('Salvar perfil:', { name, email });
+    if (loading || !userId) return;
+
+    // Validações básicas
+    if (!name.trim()) {
+      Alert.alert('Erro', 'O nome não pode estar vazio');
+      return;
+    }
+
+    if (!email.trim()) {
+      Alert.alert('Erro', 'O email não pode estar vazio');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const updatedProfile = await updateUserProfile({
+        id: userId,
+        name: name.trim(),
+        email: email.trim(),
+      });
+
+      // Atualiza o contexto com os novos dados
+      setUser({
+        email: updatedProfile.email,
+        name: updatedProfile.name,
+      });
+
+      Alert.alert(
+        'Sucesso',
+        'Perfil atualizado com sucesso!',
+        [
+          {
+            text: 'OK',
+            onPress: () => router.back(),
+          },
+        ]
+      );
+    } catch (error: any) {
+      console.error('Erro ao atualizar perfil:', error);
+      Alert.alert(
+        'Erro',
+        error.message || 'Não foi possível atualizar o perfil. Tente novamente.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

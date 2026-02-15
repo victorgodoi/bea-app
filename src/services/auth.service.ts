@@ -1,15 +1,5 @@
+import type { SignInInput, SignUpInput, UpdateUserProfileInput } from "../types/auth.types";
 import { supabase } from "./supabase";
-
-type SignUpInput = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-type SignInInput = {
-  email: string;
-  password: string;
-};
 
 export async function signUpUser({
   name,
@@ -126,6 +116,75 @@ export async function getUserProfileById(id: string) {
     return data;
   } catch (error: any) {
     console.error('Erro ao buscar perfil do usuário por ID:', error);
+    throw error;
+  }
+}
+
+export async function updateUserProfile({
+  id,
+  name,
+  email,
+}: UpdateUserProfileInput) {
+  // Validações
+  if (!id) {
+    throw new Error('ID do usuário é obrigatório');
+  }
+
+  if (name !== undefined && name.trim().length < 2) {
+    throw new Error('Nome deve ter pelo menos 2 caracteres');
+  }
+
+  if (email !== undefined && !email.includes('@')) {
+    throw new Error('Email inválido');
+  }
+
+  try {
+    // Prepara os dados para atualização
+    const updateData: any = {
+      updated_at: new Date().toISOString(),
+    };
+
+    if (name !== undefined) {
+      updateData.name = name.trim();
+    }
+
+    if (email !== undefined) {
+      updateData.email = email.trim().toLowerCase();
+    }
+
+    // Atualiza o perfil no Supabase
+    const { data, error } = await supabase
+      .from('users_profile')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    // Se o email foi alterado, também atualiza no auth
+    if (email !== undefined) {
+      const { error: authError } = await supabase.auth.updateUser({
+        email: email.trim().toLowerCase(),
+      });
+
+      if (authError) {
+        console.warn('Aviso: Email atualizado no perfil, mas houve um problema ao atualizar no auth:', authError.message);
+      }
+    }
+
+    return data;
+  } catch (error: any) {
+    // Traduz erros comuns do Supabase
+    if (error.message?.includes('duplicate key')) {
+      throw new Error('Este email já está em uso');
+    }
+    if (error.message?.includes('violates foreign key constraint')) {
+      throw new Error('Erro ao atualizar perfil: referência inválida');
+    }
+    console.error('Erro ao atualizar perfil:', error);
     throw error;
   }
 }
