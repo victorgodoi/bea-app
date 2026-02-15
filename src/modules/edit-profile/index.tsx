@@ -91,7 +91,7 @@ export default function EditProfileScreen() {
         enableOnAndroid={true}
         enableAutomaticScroll={true}
       >
-        <PageTitle>Editar Perfil</PageTitle>
+        <PageTitle>Meus Dados</PageTitle>
         <FormContainer>
           <InputField
             label="Nome"
