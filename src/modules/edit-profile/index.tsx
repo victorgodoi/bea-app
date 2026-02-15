@@ -1,18 +1,18 @@
-import { HeaderSecundary } from '@/src/components/headerSecundary';
-import { PrimaryButton } from '@/src/components/primaryButton';
-import { SecondaryButton } from '@/src/components/secondaryButton';
+import {
+  ButtonFooter,
+  HeaderSecundary,
+  InputField,
+  PageTitle,
+  PrimaryButton,
+  SecondaryButton,
+} from '@/src/components';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { updateUserProfile } from '@/src/services/auth.service';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import {
-  Alert,
-  SafeAreaView,
-  StyleSheet,
-  TextInput
-} from 'react-native';
+import { Alert, SafeAreaView, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Footer, FormContainer, InputWrapper, Label, Title } from './styleEditProfile';
+import { FormContainer } from './styleEditProfile';
 
 export default function EditProfileScreen() {
   const router = useRouter();
@@ -91,48 +91,39 @@ export default function EditProfileScreen() {
         enableOnAndroid={true}
         enableAutomaticScroll={true}
       >
-        <Title>Editar Perfil</Title>
-        
+        <PageTitle>Editar Perfil</PageTitle>
         <FormContainer>
-          <InputWrapper>
-            <Label>Nome</Label>
-            <TextInput
-              style={styles.input}
-              placeholder="Digite seu nome"
-              placeholderTextColor="#999"
-              value={name}
-              onChangeText={setName}
-              autoCapitalize="words"
-            />
-          </InputWrapper>
-
-          <InputWrapper>
-            <Label>Email</Label>
-            <TextInput
-              style={styles.input}
-              placeholder="Digite seu email"
-              placeholderTextColor="#999"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </InputWrapper>
+          <InputField
+            label="Nome"
+            placeholder="Digite seu nome"
+            placeholderTextColor="#999"
+            value={name}
+            onChangeText={setName}
+            autoCapitalize="words"
+          />
+          <InputField
+            label="Email"
+            placeholder="Digite seu email"
+            placeholderTextColor="#999"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
         </FormContainer>
       </KeyboardAwareScrollView>
-      <Footer>
+      <ButtonFooter>
         <SecondaryButton 
           title="Cancelar"
           onPress={() => router.back()}
         />
-
         <PrimaryButton 
           title="Salvar"
           onPress={handleSave}
           loading={loading}
           disabled={loading}
         />
-      </Footer>
+      </ButtonFooter>
     </SafeAreaView>
   );
 }
@@ -148,14 +139,5 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 24,
-  },
-  input: {
-    backgroundColor: '#f5f5f5',
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    color: '#333',
   },
 });

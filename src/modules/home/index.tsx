@@ -1,4 +1,4 @@
-import { Header } from '@/src/components/header';
+import { Header } from '@/src/components';
 
 export default function HomeScreen() {
   return (

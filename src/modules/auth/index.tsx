@@ -1,3 +1,4 @@
+import { Dialog } from '@/src/components';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -12,7 +13,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Dialog } from '../../components/dialog';
 import { useAuth } from '../../contexts/AuthContext';
 import { signInUser, signUpUser } from '../../services/auth.service';
 import {
