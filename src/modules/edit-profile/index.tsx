@@ -1,18 +1,18 @@
 import { HeaderSecundary } from '@/src/components/headerSecundary';
+import { PrimaryButton } from '@/src/components/primaryButton';
+import { SecondaryButton } from '@/src/components/secondaryButton';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { updateUserProfile } from '@/src/services/auth.service';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   SafeAreaView,
   StyleSheet,
-  TextInput,
-  TouchableOpacity
+  TextInput
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { CancelButton, CancelButtonText, Footer, FormContainer, InputWrapper, Label, SaveButtonText, Title } from './styleEditProfile';
+import { Footer, FormContainer, InputWrapper, Label, Title } from './styleEditProfile';
 
 export default function EditProfileScreen() {
   const router = useRouter();
@@ -121,21 +121,17 @@ export default function EditProfileScreen() {
         </FormContainer>
       </KeyboardAwareScrollView>
       <Footer>
-        <CancelButton onPress={() => router.back()}>
-          <CancelButtonText>Cancelar</CancelButtonText>
-        </CancelButton>
+        <SecondaryButton 
+          title="Cancelar"
+          onPress={() => router.back()}
+        />
 
-        <TouchableOpacity 
-          style={[styles.saveButton, loading && styles.buttonDisabled]} 
+        <PrimaryButton 
+          title="Salvar"
           onPress={handleSave}
+          loading={loading}
           disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <SaveButtonText>Salvar</SaveButtonText>
-          )}
-        </TouchableOpacity>
+        />
       </Footer>
     </SafeAreaView>
   );
@@ -161,16 +157,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e0e0e0',
     color: '#333',
-  },
-  saveButton: {
-    flex: 1,
-    backgroundColor: '#c43edf',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonDisabled: {
-    opacity: 0.6,
   },
 });
