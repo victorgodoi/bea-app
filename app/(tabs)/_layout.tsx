@@ -24,7 +24,6 @@ function TabLayoutContent() {
         try {
           const userProfile = await getUserProfile(user.email);
           setProfile(userProfile);
-          console.log('User profile in layout:', userProfile);
         } catch (error) {
           console.error('Erro ao carregar perfil:', error);
         }

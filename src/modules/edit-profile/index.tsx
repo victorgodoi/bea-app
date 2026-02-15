@@ -22,7 +22,6 @@ export default function EditProfileScreen() {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  console.log('userId: ', userId);
 
   useEffect(() => {
     if (params.name) setName(params.name as string);
