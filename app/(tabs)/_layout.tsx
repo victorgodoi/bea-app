@@ -59,7 +59,10 @@ function TabLayoutContent() {
         <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
           <Text style={styles.drawerItemText}>Dependentes</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.drawerItem} onPress={() => {
+          closeDrawer();
+          router.push('/payment-methods');
+        }}>
           <Text style={styles.drawerItemText}>Contas</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
