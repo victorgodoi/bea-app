@@ -61,7 +61,12 @@ function TabLayoutContent() {
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={() => {
           closeDrawer();
-          router.push('/payment-methods');
+          router.push({
+            pathname: '/payment-methods',
+            params: { 
+              companyId: profile?.company_id || '',
+            }
+          });
         }}>
           <Text style={styles.drawerItemText}>Contas</Text>
         </TouchableOpacity>

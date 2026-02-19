@@ -3,6 +3,7 @@ import { useNotification } from '@/src/contexts/NotificationContext';
 import { getAllPaymentMethods } from '@/src/services/payment-methods.service';
 import { PaymentMethod } from '@/src/types/payment-methods.types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView } from 'react-native';
 import {
@@ -15,16 +16,27 @@ import {
 } from './stylePaymentMethodsList';
 
 export default function PaymentMethodsListScreen() {
+  const router = useRouter();
+  const params = useLocalSearchParams();
   const { error } = useNotification();
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [companyId, setCompanyId] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const loadPaymentMethods = useCallback(async () => {
+    const currentCompanyId = (params?.companyId as string) || companyId;
+    
+    if (!currentCompanyId) {
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
+
+    if (params?.companyId) setCompanyId(params.companyId as string);
+    
     try {
-      // TODO: Substituir por company_id do usuário logado quando disponível
-      const mockCompanyId = '00000000-0000-0000-0000-000000000000';
-      const data = await getAllPaymentMethods(mockCompanyId);
+      const data = await getAllPaymentMethods(currentCompanyId);
       setPaymentMethods(data);
     } catch (err: any) {
       console.error('Erro ao carregar métodos de pagamento:', err);
@@ -33,7 +45,7 @@ export default function PaymentMethodsListScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [error]);
+  }, [error, companyId, params?.companyId]);
 
   useEffect(() => {
     loadPaymentMethods();
@@ -50,8 +62,12 @@ export default function PaymentMethodsListScreen() {
   };
 
   const handleAddPress = () => {
-    // TODO: Navegar para tela de criação
-    console.log('Adicionar novo método de pagamento');
+    router.push({
+      pathname: '/create-payment-method',
+      params: { 
+        companyId: companyId || '',
+      }
+    });
   };
 
   if (loading) {
