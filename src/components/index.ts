@@ -9,4 +9,6 @@ export { PageTitle } from './pageTitle';
 export { PaymentMethodCard } from './paymentMethodCard';
 export { PrimaryButton } from './primaryButton';
 export { SecondaryButton } from './secondaryButton';
+export { SelectField } from './selectField';
+export { StepIndicator } from './stepIndicator';
 
