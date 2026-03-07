@@ -24,7 +24,7 @@ import {
   TabContainer
 } from './styleAuth';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 export default function AuthScreen() {
   const router = useRouter();
@@ -232,8 +232,6 @@ export default function AuthScreen() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    width: width,
-    height: height,
   },
   scrollContent: {
     flexGrow: 1,
