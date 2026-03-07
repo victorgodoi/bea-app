@@ -92,7 +92,7 @@ export default function PaymentMethodsListScreen() {
           }
         >
           <ContentContainer>
-            <PageTitle>Contas</PageTitle>
+            <PageTitle>Métodos de Pagamento</PageTitle>
             {paymentMethods.length === 0 ? (
               <EmptyStateContainer>
                 <EmptyStateIcon>

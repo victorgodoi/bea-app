@@ -68,7 +68,7 @@ function TabLayoutContent() {
             }
           });
         }}>
-          <Text style={styles.drawerItemText}>Contas</Text>
+          <Text style={styles.drawerItemText}>Métodos de Pagamento</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
           <Text style={styles.drawerItemText}>Categorias</Text>
