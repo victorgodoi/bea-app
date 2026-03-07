@@ -2,6 +2,7 @@ import {
   ButtonFooter,
   HeaderSecundary,
   InputField,
+  InputFieldNumber,
   PageTitle,
   PrimaryButton,
   SecondaryButton,
@@ -10,9 +11,9 @@ import {
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import { createPaymentMethod } from '@/src/services/payment-methods.service';
-import { CardType, PaymentMethodType } from '@/src/types/payment-methods.types';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { CardType, FlagType, PaymentMethodType } from '@/src/types/payment-methods.types';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, Switch } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
@@ -24,6 +25,7 @@ import {
 
 export default function CreatePaymentMethodScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   const { success, error } = useNotification();
   const [currentStep, setCurrentStep] = useState<number>(1);
 
@@ -31,8 +33,8 @@ export default function CreatePaymentMethodScreen() {
   const [description, setDescription] = useState<string>('');
   const [type, setType] = useState<PaymentMethodType>('credit');
   const [bankName, setBankName] = useState<string>('');
-  const [cardType, setCardType] = useState<CardType>('mastercard');
-  const [flag, setFlag] = useState<string>('');
+  const [cardType, setCardType] = useState<CardType | undefined>(undefined);
+  const [flag, setFlag] = useState<FlagType | undefined>(undefined);
   const [ownerCard, setOwnerCard] = useState<string>('');
   const [dueDay, setDueDay] = useState<string>('');
   const [closingDay, setClosingDay] = useState<string>('');
@@ -43,12 +45,13 @@ export default function CreatePaymentMethodScreen() {
   const paymentTypeOptions = [
     { label: 'Cartão de Crédito', value: 'credit' },
     { label: 'Cartão de Débito', value: 'debit' },
+    { label: 'Cartão Pré-pago', value: 'prepaid' },
     { label: 'Dinheiro', value: 'cash' },
     { label: 'PIX', value: 'pix' },
     { label: 'Transferência Bancária', value: 'bank_transfer' },
   ];
 
-  const cardTypeOptions = [
+  const flagOptions = [
     { label: 'Visa', value: 'visa' },
     { label: 'Mastercard', value: 'mastercard' },
     { label: 'Elo', value: 'elo' },
@@ -67,31 +70,42 @@ export default function CreatePaymentMethodScreen() {
 
   // Determina quantos steps são necessários baseado no tipo
   const getTotalSteps = (): number => {
-    if (type === 'cash') return 1; // Apenas descrição e tipo
-    if (type === 'credit') return 4; // Descrição, Bancário, Cartão, Datas
-    if (type === 'debit') return 3; // Descrição, Bancário, Cartão
-    return 2; // PIX/Transferência: Descrição, Bancário
+    if (type === 'cash') return 1;
+    if (type === 'credit') return 4;
+    if (type === 'debit') return 3;
+    if (type === 'prepaid') return 3;
+    return 2;
   };
 
-  // Valida o step atual antes de avançar
-  const validateCurrentStep = (): boolean => {
+  // Verifica se o botão deve estar desabilitado baseado no step atual
+  const isButtonDisabled = (): boolean => {
+    if (loading) return true;
+    
+    // Step 1: Validação básica (todos os tipos)
     if (currentStep === 1) {
-      if (!description.trim()) {
-        error('Erro', 'A descrição é obrigatória');
-        return false;
-      }
-      if (!type) {
-        error('Erro', 'Selecione o tipo de pagamento');
-        return false;
-      }
+      return !description.trim() || !type;
     }
-    return true;
+    
+    // Step 2: Informações Bancárias (exceto cash)
+    if (currentStep === 2 && type !== 'cash') {
+      return !bankName.trim() || !ownerCard.trim();
+    }
+    
+    // Step 3: Informações do Cartão (apenas credit, debit, prepaid)
+    if (currentStep === 3 && showCardFields) {
+      return !flag || !expirationDate.trim();
+    }
+    
+    // Step 4: Datas de Pagamento (apenas credit)
+    if (currentStep === 4 && showDueDays) {
+      return !closingDay.trim() || !dueDay.trim();
+    }
+    
+    return false;
   };
 
   // Avança para o próximo step
   const handleNext = () => {
-    if (!validateCurrentStep()) return;
-    
     const totalSteps = getTotalSteps();
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
@@ -107,29 +121,48 @@ export default function CreatePaymentMethodScreen() {
     }
   };
 
+  // Converte data do formato MM/AA para YYYY-MM-DD
+  const convertExpirationDate = (mmaaDate: string): string | undefined => {
+    if (!mmaaDate || mmaaDate.length !== 5) return undefined;
+    
+    const [month, year] = mmaaDate.split('/');
+    
+    // Valida se o mês está entre 01 e 12
+    const monthNum = parseInt(month, 10);
+    if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
+      return undefined;
+    }
+    
+    const fullYear = `20${year}`; // Assume anos 20XX
+    
+    // Retorna no formato YYYY-MM-DD (primeiro dia do mês)
+    // Garante que o mês tenha sempre 2 dígitos
+    const paddedMonth = month.padStart(2, '0');
+    return `${fullYear}-${paddedMonth}-01`;
+  };
+
   const handleSave = async () => {
     if (loading) return;
-
-    // Validação final
-    if (!validateCurrentStep()) return;
-
     setLoading(true);
 
     try {
-      // TODO: Substituir por company_id do usuário logado quando disponível
-      const mockCompanyId = '00000000-0000-0000-0000-000000000000';
+      const companyId = params.companyId as string;
+      
+      if (!companyId) {
+        throw new Error('ID da empresa não fornecido');
+      }
 
       await createPaymentMethod({
         description: description.trim(),
-        type,
+        type: (type === 'credit' || type === 'debit' || type === 'prepaid') ? 'card' : undefined,
         bank_name: bankName.trim() || undefined,
-        card_type: (type === 'credit' || type === 'debit') && cardType ? cardType : undefined,
-        flag: flag.trim() || undefined,
+        card_type: cardType || undefined,
+        flag: flag || undefined,
         owner_card: ownerCard.trim() || undefined,
         due_day: dueDay ? parseInt(dueDay, 10) : undefined,
         closing_day: closingDay ? parseInt(closingDay, 10) : undefined,
-        expiration_date: expirationDate || undefined,
-        company_id: mockCompanyId,
+        expiration_date: convertExpirationDate(expirationDate),
+        company_id: companyId,
         is_active: isActive,
       });
 
@@ -165,7 +198,25 @@ export default function CreatePaymentMethodScreen() {
     return currentStep < totalSteps ? 'Próximo' : 'Salvar';
   };
 
-  const showCardFields = type === 'credit' || type === 'debit';
+  useEffect(() => {
+    if (type === 'credit') {
+      setCardType('credit');
+    } else if (type === 'debit') {
+      setCardType('debit');
+    } else if (type === 'prepaid') {
+      setCardType('prepaid');
+    } else {
+      setCardType(undefined);
+    }
+  }, [type]);
+
+  useEffect(() => {
+    if (currentStep === 3) {
+      setFlag('mastercard');
+    }
+  }, [currentStep]);
+
+  const showCardFields = type === 'credit' || type === 'debit' || type === 'prepaid';
   const showDueDays = type === 'credit';
 
   return (
@@ -179,7 +230,7 @@ export default function CreatePaymentMethodScreen() {
         enableOnAndroid={true}
         enableAutomaticScroll={true}
       >
-        <PageTitle>Adicionar Conta</PageTitle>
+        <PageTitle>Adicionar Método de Pagamento</PageTitle>
 
         {/* Indicador de Steps */}
         <StepIndicator currentStep={currentStep} totalSteps={getTotalSteps()} />
@@ -195,11 +246,12 @@ export default function CreatePaymentMethodScreen() {
                 value={description}
                 onChangeText={setDescription}
                 autoCapitalize="words"
+                required
               />
 
               <SelectField
                 label="Tipo de Pagamento *"
-                selectedValue={type}
+                selectedValue={type || 'credit'}
                 onValueChange={handleTypeChange}
                 options={paymentTypeOptions}
               />
@@ -222,21 +274,23 @@ export default function CreatePaymentMethodScreen() {
               <SectionTitle>Informações Bancárias</SectionTitle>
 
               <InputField
-                label="Banco"
+                label="Banco *"
                 placeholder="Ex: Nubank, Itaú, Bradesco"
                 placeholderTextColor="#999"
                 value={bankName}
                 onChangeText={setBankName}
                 autoCapitalize="words"
+                required
               />
 
               <InputField
-                label="Titular"
+                label="Titular *"
                 placeholder="Nome do titular"
                 placeholderTextColor="#999"
                 value={ownerCard}
                 onChangeText={setOwnerCard}
                 autoCapitalize="words"
+                required
               />
             </>
           )}
@@ -247,28 +301,20 @@ export default function CreatePaymentMethodScreen() {
               <SectionTitle>Informações do Cartão</SectionTitle>
 
               <SelectField
-                label="Bandeira do Cartão"
-                selectedValue={cardType}
-                onValueChange={(value) => setCardType(value as CardType)}
-                options={cardTypeOptions}
+                label="Bandeira do Cartão *"
+                selectedValue={flag || 'mastercard'}
+                onValueChange={(value) => setFlag(value as FlagType)}
+                options={flagOptions}
               />
 
-              <InputField
-                label="Bandeira/Flag"
-                placeholder="Ex: Mastercard, Visa"
-                placeholderTextColor="#999"
-                value={flag}
-                onChangeText={setFlag}
-                autoCapitalize="words"
-              />
-
-              <InputField
-                label="Data de Validade"
+              <InputFieldNumber
+                label="Data de Validade *"
                 placeholder="MM/AA (Ex: 12/28)"
                 placeholderTextColor="#999"
                 value={expirationDate}
                 onChangeText={setExpirationDate}
-                maxLength={5}
+                mask="##/##"
+                required
               />
             </>
           )}
@@ -278,24 +324,22 @@ export default function CreatePaymentMethodScreen() {
             <>
               <SectionTitle>Datas de Pagamento</SectionTitle>
 
-              <InputField
-                label="Dia de Fechamento"
+              <InputFieldNumber
+                label="Dia de Fechamento *"
                 placeholder="Dia (1-31)"
                 placeholderTextColor="#999"
                 value={closingDay}
                 onChangeText={setClosingDay}
-                keyboardType="number-pad"
-                maxLength={2}
+                required
               />
 
-              <InputField
-                label="Dia de Vencimento"
+              <InputFieldNumber
+                label="Dia de Vencimento *"
                 placeholder="Dia (1-31)"
                 placeholderTextColor="#999"
                 value={dueDay}
                 onChangeText={setDueDay}
-                keyboardType="number-pad"
-                maxLength={2}
+                required
               />
             </>
           )}
@@ -307,11 +351,11 @@ export default function CreatePaymentMethodScreen() {
           title={currentStep === 1 ? 'Cancelar' : 'Voltar'}
           onPress={handleBack}
         />
-        <PrimaryButton 
+        <PrimaryButton
           title={getPrimaryButtonLabel()}
           onPress={handlePrimaryAction}
           loading={loading}
-          disabled={loading}
+          disabled={isButtonDisabled()}
         />
       </ButtonFooter>
     </SafeAreaView>

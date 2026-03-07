@@ -1,11 +1,12 @@
-export type PaymentMethodType = 'credit' | 'debit' | 'cash' | 'pix' | 'bank_transfer';
-export type CardType = 'visa' | 'mastercard' | 'elo' | 'american_express' | 'other';
+export type PaymentMethodType = 'credit' | 'debit' | 'prepaid' | 'cash' | 'pix' | 'bank_transfer' | 'card' | undefined;
+export type CardType = 'credit' | 'debit' | 'prepaid';
+export type FlagType = 'visa' | 'mastercard' | 'elo' | 'american_express' | 'other';
 
 export interface PaymentMethod {
   id: string;
   description: string;
   type: PaymentMethodType;
-  flag: string | null;
+  flag: FlagType | undefined;
   bank_name: string | null;
   card_type: CardType | null;
   owner_card: string | null;
@@ -22,9 +23,9 @@ export interface PaymentMethod {
 export interface CreatePaymentMethodInput {
   description: string;
   type: PaymentMethodType;
-  flag?: string;
+  flag?: FlagType | undefined;
   bank_name?: string;
-  card_type?: CardType;
+  card_type?: CardType | undefined;
   owner_card?: string;
   company_id: string;
   due_day?: number;
@@ -37,9 +38,9 @@ export interface UpdatePaymentMethodInput {
   id: string;
   description?: string;
   type?: PaymentMethodType;
-  flag?: string;
+  flag?: FlagType | undefined;
   bank_name?: string;
-  card_type?: CardType;
+  card_type?: CardType | undefined;
   owner_card?: string;
   due_day?: number;
   closing_day?: number;
