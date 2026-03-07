@@ -115,109 +115,109 @@ export default function AuthScreen() {
         extraScrollHeight={height * 0.15}
         keyboardOpeningTime={0}
       >
-          <LogoContainer>
-            <Image
-              source={require("../../../assets/images/iconBea.png")}
-              style={{ width: 100, height: 100 }}
-            />
-          </LogoContainer>
+        <LogoContainer>
+          <Image
+            source={require("../../../assets/images/iconBea.png")}
+            style={{ width: 100, height: 100 }}
+          />
+        </LogoContainer>
 
-          <FormContainer>
-            <TabContainer>
-              <TouchableOpacity
-                style={[styles.tab, isLogin && styles.activeTab]}
-                onPress={() => setIsLogin(true)}
-              >
-                <Text style={[styles.tabText, isLogin && styles.activeTabText]}>
-                  Login
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.tab, !isLogin && styles.activeTab]}
-                onPress={() => setIsLogin(false)}
-              >
-                <Text style={[styles.tabText, !isLogin && styles.activeTabText]}>
-                  Cadastro
-                </Text>
-              </TouchableOpacity>
-            </TabContainer>
+        <FormContainer>
+          <TabContainer>
+            <TouchableOpacity
+              style={[styles.tab, isLogin && styles.activeTab]}
+              onPress={() => setIsLogin(true)}
+            >
+              <Text style={[styles.tabText, isLogin && styles.activeTabText]}>
+                Login
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tab, !isLogin && styles.activeTab]}
+              onPress={() => setIsLogin(false)}
+            >
+              <Text style={[styles.tabText, !isLogin && styles.activeTabText]}>
+                Cadastro
+              </Text>
+            </TouchableOpacity>
+          </TabContainer>
 
-            <InputContainer>
-              {!isLogin && (
-                <InputWrapper>
-                  <Label>Nome</Label>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Digite seu nome"
-                    placeholderTextColor="#e0e0e0"
-                    value={name}
-                    onChangeText={setName}
-                    autoCapitalize="words"
-                  />
-                </InputWrapper>
-              )}
-
+          <InputContainer>
+            {!isLogin && (
               <InputWrapper>
-                <Label>Email</Label>
+                <Label>Nome</Label>
                 <TextInput
                   style={styles.input}
-                  placeholder="Digite seu email"
+                  placeholder="Digite seu nome"
                   placeholderTextColor="#e0e0e0"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
+                  value={name}
+                  onChangeText={setName}
+                  autoCapitalize="words"
                 />
               </InputWrapper>
+            )}
 
+            <InputWrapper>
+              <Label>Email</Label>
+              <TextInput
+                style={styles.input}
+                placeholder="Digite seu email"
+                placeholderTextColor="#e0e0e0"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </InputWrapper>
+
+            <InputWrapper>
+              <Label>Senha</Label>
+              <TextInput
+                style={styles.input}
+                placeholder="Digite sua senha"
+                placeholderTextColor="#e0e0e0"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+            </InputWrapper>
+
+            {!isLogin && (
               <InputWrapper>
-                <Label>Senha</Label>
+                <Label>Confirmar Senha</Label>
                 <TextInput
                   style={styles.input}
-                  placeholder="Digite sua senha"
+                  placeholder="Confirme sua senha"
                   placeholderTextColor="#e0e0e0"
-                  value={password}
-                  onChangeText={setPassword}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
                   secureTextEntry
                 />
               </InputWrapper>
+            )}
 
-              {!isLogin && (
-                <InputWrapper>
-                  <Label>Confirmar Senha</Label>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Confirme sua senha"
-                    placeholderTextColor="#e0e0e0"
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    secureTextEntry
-                  />
-                </InputWrapper>
-              )}
-
-              {/* {isLogin && (
-                <TouchableOpacity style={styles.forgotPassword}>
-                  <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
-                </TouchableOpacity>
-              )} */}
-
-              <TouchableOpacity 
-                style={[styles.button, loading && styles.buttonDisabled]} 
-                onPress={handleAuth}
-                disabled={loading}
-              >
-                {loading ? (
-                  <ActivityIndicator color="#c43edf" />
-                ) : (
-                  <Text style={styles.buttonText}>
-                    {isLogin ? 'Entrar' : 'Cadastrar'}
-                  </Text>
-                )}
+            {/* {isLogin && (
+              <TouchableOpacity style={styles.forgotPassword}>
+                <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
               </TouchableOpacity>
-            </InputContainer>
-          </FormContainer>
-        </KeyboardAwareScrollView>
+            )} */}
+
+            <TouchableOpacity 
+              style={[styles.button, loading && styles.buttonDisabled]} 
+              onPress={handleAuth}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color="#c43edf" />
+              ) : (
+                <Text style={styles.buttonText}>
+                  {isLogin ? 'Entrar' : 'Cadastrar'}
+                </Text>
+              )}
+            </TouchableOpacity>
+          </InputContainer>
+        </FormContainer>
+      </KeyboardAwareScrollView>
 
       <Dialog
         visible={dialogVisible}
