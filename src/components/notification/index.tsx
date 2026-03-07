@@ -3,7 +3,6 @@ import { Modal } from 'react-native';
 import {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import {
@@ -44,14 +43,11 @@ export function Notification({
 
   useEffect(() => {
     if (visible) {
-      translateY.value = withSpring(0, { 
-        damping: 16,
-        stiffness: 150,
-      });
-      opacity.value = withTiming(1, { duration: 100 });
+      translateY.value = withTiming(0, { duration: 300 });
+      opacity.value = withTiming(1, { duration: 200 });
     } else {
-      translateY.value = withTiming(500, { duration: 150 });
-      opacity.value = withTiming(0, { duration: 100 });
+      translateY.value = withTiming(500, { duration: 250 });
+      opacity.value = withTiming(0, { duration: 150 });
     }
   }, [visible, translateY, opacity]);
 
