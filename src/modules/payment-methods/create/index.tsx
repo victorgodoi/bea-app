@@ -160,7 +160,7 @@ export default function CreatePaymentMethodScreen() {
 
       await createPaymentMethod({
         description: description.trim(),
-        type: (type === 'credit' || type === 'debit' || type === 'prepaid') ? 'card' : undefined,
+        type: (type === 'credit' || type === 'debit' || type === 'prepaid') ? 'card' : type,
         bank_name: bankName.trim() || undefined,
         card_type: cardType || undefined,
         flag: flag || undefined,

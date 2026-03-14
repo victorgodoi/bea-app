@@ -3,15 +3,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { TouchableOpacityProps } from 'react-native';
 import {
-    Card,
-    CardBadge,
-    CardBadgeText,
-    CardHeader,
-    CardInfo,
-    CardInfoLabel,
-    CardInfoRow,
-    CardInfoText,
-    CardTitle,
+  Card,
+  CardBadge,
+  CardBadgeText,
+  CardHeader,
+  CardInfo,
+  CardInfoLabel,
+  CardInfoRow,
+  CardInfoText,
+  CardTitle,
 } from './stylePaymentMethodCard';
 
 interface PaymentMethodCardProps extends TouchableOpacityProps {
@@ -22,10 +22,13 @@ export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
   paymentMethod, 
   ...rest 
 }) => {
+  const paymentMethodType = paymentMethod.type === 'card' ? paymentMethod.card_type : paymentMethod.type;
+
   const getTypeLabel = (type: string): string => {
     const labels: Record<string, string> = {
       credit: 'Crédito',
       debit: 'Débito',
+      prepaid: 'Pré-pago',
       cash: 'Dinheiro',
       pix: 'PIX',
       bank_transfer: 'Transferência',
@@ -33,10 +36,22 @@ export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
     return labels[type] || type;
   };
 
+    const getFlagLabel = (type: string): string => {
+      const labels: Record<string, string> = {
+        visa: 'Visa',
+        mastercard: 'Mastercard',
+        elo: 'Elo',
+        american_express: 'American Express',
+        other: 'Outro',
+      };
+      return labels[type] || type;
+    };
+
   const getCardIcon = (type: string) => {
     switch (type) {
       case 'credit':
       case 'debit':
+      case 'prepaid':
         return <MaterialCommunityIcons name="credit-card" size={20} color="#666" />;
       case 'cash':
         return <MaterialCommunityIcons name="cash" size={20} color="#666" />;
@@ -53,9 +68,9 @@ export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
     <Card {...rest}>
       <CardHeader>
         <CardTitle numberOfLines={1}>{paymentMethod.description}</CardTitle>
-        <CardBadge type={paymentMethod.type}>
-          <CardBadgeText type={paymentMethod.type}>
-            {getTypeLabel(paymentMethod.type)}
+        <CardBadge type={paymentMethodType}>
+          <CardBadgeText type={paymentMethodType}>
+            {getTypeLabel(paymentMethodType as string)}
           </CardBadgeText>
         </CardBadge>
       </CardHeader>
@@ -63,17 +78,17 @@ export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
       <CardInfo>
         {paymentMethod.bank_name && (
           <CardInfoRow>
-            {getCardIcon(paymentMethod.type)}
+            {getCardIcon(paymentMethodType as string)}
             <CardInfoLabel>Banco:</CardInfoLabel>
             <CardInfoText>{paymentMethod.bank_name}</CardInfoText>
           </CardInfoRow>
         )}
 
-        {paymentMethod.card_type && (
+        {paymentMethod.flag && (
           <CardInfoRow>
             <MaterialCommunityIcons name="credit-card-outline" size={20} color="#666" />
             <CardInfoLabel>Tipo:</CardInfoLabel>
-            <CardInfoText>{paymentMethod.card_type.toUpperCase()}</CardInfoText>
+            <CardInfoText>{getFlagLabel(paymentMethod.flag).toUpperCase()}</CardInfoText>
           </CardInfoRow>
         )}
 
