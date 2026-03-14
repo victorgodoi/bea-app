@@ -28,6 +28,7 @@ export interface CreatePaymentMethodInput {
   card_type?: CardType | undefined;
   owner_card?: string;
   company_id: string;
+  created_by: string;
   due_day?: number;
   closing_day?: number;
   expiration_date?: string;

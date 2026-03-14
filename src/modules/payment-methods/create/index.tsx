@@ -1,3 +1,4 @@
+import { useProfile } from '@/hooks/use-profile';
 import {
   ButtonFooter,
   HeaderSecundary,
@@ -27,6 +28,7 @@ export default function CreatePaymentMethodScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { success, error } = useNotification();
+  const { profile } = useProfile();
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   // Estados do formulário
@@ -152,6 +154,10 @@ export default function CreatePaymentMethodScreen() {
         throw new Error('ID da empresa não fornecido');
       }
 
+      if (!profile?.id) {
+        throw new Error('Usuário não autenticado. Faça login novamente.');
+      }
+
       await createPaymentMethod({
         description: description.trim(),
         type: (type === 'credit' || type === 'debit' || type === 'prepaid') ? 'card' : undefined,
@@ -163,6 +169,7 @@ export default function CreatePaymentMethodScreen() {
         closing_day: closingDay ? parseInt(closingDay, 10) : undefined,
         expiration_date: convertExpirationDate(expirationDate),
         company_id: companyId,
+        created_by: profile.id,
         is_active: isActive,
       });
 
