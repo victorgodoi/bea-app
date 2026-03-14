@@ -36,16 +36,16 @@ export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({
     return labels[type] || type;
   };
 
-    const getFlagLabel = (type: string): string => {
-      const labels: Record<string, string> = {
-        visa: 'Visa',
-        mastercard: 'Mastercard',
-        elo: 'Elo',
-        american_express: 'American Express',
-        other: 'Outro',
-      };
-      return labels[type] || type;
+  const getFlagLabel = (type: string): string => {
+    const labels: Record<string, string> = {
+      visa: 'Visa',
+      mastercard: 'Mastercard',
+      elo: 'Elo',
+      american_express: 'American Express',
+      other: 'Outro',
     };
+    return labels[type] || type;
+  };
 
   const getCardIcon = (type: string) => {
     switch (type) {
