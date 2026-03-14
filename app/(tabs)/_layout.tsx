@@ -1,37 +1,22 @@
 import { Drawer } from '@ant-design/react-native';
 import { Tabs, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useProfile } from '@/hooks/use-profile';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { DrawerProvider, useDrawer } from '@/src/contexts/DrawerContext';
-import { getUserProfile } from '@/src/services/auth.service';
 
 function TabLayoutContent() {
   const colorScheme = useColorScheme();
   const { isDrawerOpen, closeDrawer } = useDrawer();
   const router = useRouter();
   const { user, setUser } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
-
-  useEffect(() => {
-    async function loadProfile() {
-      if (user?.email) {
-        try {
-          const userProfile = await getUserProfile(user.email);
-          setProfile(userProfile);
-        } catch (error) {
-          console.error('Erro ao carregar perfil:', error);
-        }
-      }
-    }
-
-    loadProfile();
-  }, [user]);
+  const { profile } = useProfile();
 
   const handleLogout = async () => {
     await setUser(null);
