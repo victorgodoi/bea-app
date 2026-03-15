@@ -1,16 +1,17 @@
 import { AntDesign } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Modal, TouchableOpacity, View } from 'react-native';
 import {
   Container,
   DropdownButton,
-  DropdownList,
   DropdownText,
   IconContainer,
   Label,
+  ModalContent,
+  ModalOverlay,
   OptionItem,
+  OptionsScrollView,
   OptionText,
-  ScrollContainer,
 } from './styleSelectField';
 
 interface SelectFieldProps {
@@ -27,6 +28,8 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   options,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownLayout, setDropdownLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const buttonRef = useRef<View>(null);
 
   const selectedOption = options.find(opt => opt.value === selectedValue);
 
@@ -35,25 +38,54 @@ export const SelectField: React.FC<SelectFieldProps> = ({
     setIsOpen(false);
   };
 
+  const handleOpen = () => {
+    if (buttonRef.current) {
+      buttonRef.current.measure((x, y, width, height, pageX, pageY) => {
+        setDropdownLayout({ x: pageX, y: pageY + height, width, height });
+        setIsOpen(true);
+      });
+    }
+  };
+
   return (
     <Container>
       <Label>{label}</Label>
-      <TouchableOpacity onPress={() => setIsOpen(!isOpen)} activeOpacity={0.7}>
-        <DropdownButton isOpen={isOpen}>
-          <DropdownText>{selectedOption?.label || 'Selecione...'}</DropdownText>
-          <IconContainer>
-            <AntDesign name={isOpen ? "up" : "down"} size={16} color="#666" />
-          </IconContainer>
-        </DropdownButton>
-      </TouchableOpacity>
+      <View ref={buttonRef} collapsable={false}>
+        <TouchableOpacity onPress={handleOpen} activeOpacity={0.7}>
+          <DropdownButton isOpen={isOpen}>
+            <DropdownText>{selectedOption?.label || 'Selecione...'}</DropdownText>
+            <IconContainer>
+              <AntDesign name={isOpen ? "up" : "down"} size={16} color="#666" />
+            </IconContainer>
+          </DropdownButton>
+        </TouchableOpacity>
+      </View>
 
-      {isOpen && (
-        <DropdownList>
-          <ScrollContainer
-            nestedScrollEnabled={true}
+      <Modal
+        visible={isOpen}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsOpen(false)}
+      >
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          activeOpacity={1}
+          onPress={() => setIsOpen(false)}
+        >
+          <ModalOverlay />
+        </TouchableOpacity>
+        
+        <ModalContent
+          style={{
+            position: 'absolute',
+            top: dropdownLayout.y + 4,
+            left: dropdownLayout.x,
+            width: dropdownLayout.width,
+          }}
+        >
+          <OptionsScrollView
             showsVerticalScrollIndicator={true}
-            scrollEnabled={true}
-            keyboardShouldPersistTaps='handled'
+            keyboardShouldPersistTaps="handled"
             bounces={false}
           >
             {options.map((option) => (
@@ -61,7 +93,6 @@ export const SelectField: React.FC<SelectFieldProps> = ({
                 key={option.value}
                 onPress={() => handleSelect(option.value)}
                 activeOpacity={0.7}
-                delayPressIn={0}
               >
                 <OptionItem selected={option.value === selectedValue}>
                   <OptionText selected={option.value === selectedValue}>
@@ -73,9 +104,9 @@ export const SelectField: React.FC<SelectFieldProps> = ({
                 </OptionItem>
               </TouchableOpacity>
             ))}
-          </ScrollContainer>
-        </DropdownList>
-      )}
+          </OptionsScrollView>
+        </ModalContent>
+      </Modal>
     </Container>
   );
 };

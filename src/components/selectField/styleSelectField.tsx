@@ -35,21 +35,12 @@ export const IconContainer = styled.View`
   margin-left: 8px;
 `;
 
-export const DropdownOverlay = styled.View`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: transparent;
+export const ModalOverlay = styled.View`
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.2);
 `;
 
-export const DropdownList = styled.View`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: 4px;
+export const ModalContent = styled.View`
   background-color: #fff;
   border-radius: 12px;
   border-width: 1px;
@@ -59,14 +50,15 @@ export const DropdownList = styled.View`
   shadow-opacity: 0.15;
   shadow-radius: 8px;
   elevation: 8;
-  z-index: 2000;
   max-height: 250px;
   overflow: hidden;
 `;
 
-export const ScrollContainer = styled.ScrollView`
-  flex-grow: 0;
-`;
+export const OptionsScrollView = styled.ScrollView.attrs({
+  contentContainerStyle: {
+    flexGrow: 1,
+  },
+})``;
 
 export const OptionItem = styled.View<{ selected?: boolean }>`
   padding: 16px;
