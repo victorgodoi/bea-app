@@ -21,7 +21,7 @@ function TabLayoutContent() {
   const handleLogout = async () => {
     await setUser(null);
     closeDrawer();
-    router.replace('/auth/' as any);
+    router.replace('/auth');
   };
 
   const sidebar = (
@@ -41,13 +41,21 @@ function TabLayoutContent() {
         }}>
           <Text style={styles.drawerItemText}>Meus Dados</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.drawerItem} onPress={() => {
+          closeDrawer();
+          router.push({
+            pathname: '/dependents',
+            params: { 
+              companyId: profile?.company_id || ''
+            }
+          });
+        }}>
           <Text style={styles.drawerItemText}>Dependentes</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={() => {
           closeDrawer();
           router.push({
-            pathname: '/payment-methods/' as any,
+            pathname: '/payment-methods',
             params: { 
               companyId: profile?.company_id || '',
             }

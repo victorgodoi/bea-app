@@ -1,5 +1,6 @@
 export { AddButton } from './addButton';
 export { ButtonFooter } from './buttonFooter';
+export { DependentCard } from './dependentCard';
 export { Dialog } from './dialog';
 export { Header } from './header';
 export { HeaderSecundary } from './headerSecundary';

@@ -1,15 +1,10 @@
 import { useAuth } from '@/src/contexts/AuthContext';
 import { getUserProfile } from '@/src/services/auth.service';
+import type { UserProfile } from '@/src/types/user.types';
 import { useEffect, useState } from 'react';
 
-export interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  company_id: string;
-  created_at: string;
-  updated_at: string;
-}
+// Re-exportar o tipo para manter compatibilidade
+export type { UserProfile };
 
 export function useProfile() {
   const { user } = useAuth();

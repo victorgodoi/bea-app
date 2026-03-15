@@ -124,6 +124,7 @@ export async function updateUserProfile({
   id,
   name,
   email,
+  role,
 }: UpdateUserProfileInput) {
   // Validações
   if (!id) {
@@ -138,6 +139,10 @@ export async function updateUserProfile({
     throw new Error('Email inválido');
   }
 
+  if (role !== undefined && !['owner', 'dependent'].includes(role)) {
+    throw new Error('Role inválido. Deve ser "owner" ou "dependent"');
+  }
+
   try {
     // Prepara os dados para atualização
     const updateData: any = {
@@ -150,6 +155,10 @@ export async function updateUserProfile({
 
     if (email !== undefined) {
       updateData.email = email.trim().toLowerCase();
+    }
+
+    if (role !== undefined) {
+      updateData.role = role;
     }
 
     // Atualiza o perfil no Supabase

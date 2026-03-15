@@ -1,3 +1,5 @@
+import type { UserRole } from './user.types';
+
 export type SignUpInput = {
   name: string;
   email: string;
@@ -13,4 +15,5 @@ export type UpdateUserProfileInput = {
   id: string;
   name?: string;
   email?: string;
+  role?: UserRole;
 };
