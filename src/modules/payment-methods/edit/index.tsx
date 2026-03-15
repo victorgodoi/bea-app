@@ -11,25 +11,28 @@ import {
   StepIndicator,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
-import { createPaymentMethod } from '@/src/services/payment-methods.service';
-import { CardType, FlagType, PaymentMethodType } from '@/src/types/payment-methods.types';
+import { getPaymentMethodById, updatePaymentMethod } from '@/src/services/payment-methods.service';
+import { CardType, FlagType, PaymentMethod, PaymentMethodType } from '@/src/types/payment-methods.types';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Switch } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, Switch } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   FormContainer,
+  LoadingContainer,
   SectionTitle,
   SwitchContainer,
   SwitchLabel
-} from './styleCreatePaymentMethod';
+} from './styleEditPaymentMethod';
 
-export default function CreatePaymentMethodScreen() {
+export default function EditPaymentMethodScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { success, error } = useNotification();
   const { profile } = useProfile();
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
 
   // Estados do formulário
   const [description, setDescription] = useState<string>('');
@@ -60,6 +63,67 @@ export default function CreatePaymentMethodScreen() {
     { label: 'American Express', value: 'american_express' },
     { label: 'Outro', value: 'other' },
   ];
+
+  // Busca os dados do método de pagamento
+  useEffect(() => {
+    const loadPaymentMethod = async () => {
+      try {
+        const paymentMethodId = params.id as string;
+        
+        if (!paymentMethodId) {
+          throw new Error('ID do método de pagamento não fornecido');
+        }
+
+        const data = await getPaymentMethodById(paymentMethodId);
+        setPaymentMethod(data);
+
+        // Preenche o formulário com os dados
+        setDescription(data.description || '');
+        
+        // Determina o tipo baseado no card_type ou type
+        if (data.card_type === 'credit') {
+          setType('credit');
+          setCardType('credit');
+        } else if (data.card_type === 'debit') {
+          setType('debit');
+          setCardType('debit');
+        } else if (data.card_type === 'prepaid') {
+          setType('prepaid');
+          setCardType('prepaid');
+        } else {
+          setType(data.type);
+        }
+
+        setBankName(data.bank_name || '');
+        setFlag(data.flag || undefined);
+        setOwnerCard(data.owner_card || '');
+        setDueDay(data.due_day ? String(data.due_day) : '');
+        setClosingDay(data.closing_day ? String(data.closing_day) : '');
+        
+        // Converte a data de expiração de YYYY-MM-DD para MM/AA
+        if (data.expiration_date) {
+          const date = new Date(data.expiration_date);
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = String(date.getFullYear()).slice(-2);
+          setExpirationDate(`${month}/${year}`);
+        }
+        
+        setIsActive(data.is_active);
+      } catch (err: any) {
+        console.error('Erro ao carregar método de pagamento:', err);
+        error(
+          'Erro',
+          err.message || 'Não foi possível carregar o método de pagamento.'
+        );
+        router.back();
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    loadPaymentMethod();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
 
   // Handler para mudança de tipo de pagamento
   const handleTypeChange = (value: string) => {
@@ -95,7 +159,7 @@ export default function CreatePaymentMethodScreen() {
     
     // Step 3: Informações do Cartão (apenas credit, debit, prepaid)
     if (currentStep === 3 && showCardFields) {
-      return !flag || !expirationDate.trim() || expirationDate.length !== 5;
+      return !flag || !expirationDate.trim();
     }
     
     // Step 4: Datas de Pagamento (apenas credit)
@@ -144,21 +208,16 @@ export default function CreatePaymentMethodScreen() {
   };
 
   const handleSave = async () => {
-    if (loading) return;
+    if (loading || !paymentMethod) return;
     setLoading(true);
 
     try {
-      const companyId = params.companyId as string;
-      
-      if (!companyId) {
-        throw new Error('ID da empresa não fornecido');
-      }
-
       if (!profile?.id) {
         throw new Error('Usuário não autenticado. Faça login novamente.');
       }
 
-      await createPaymentMethod({
+      await updatePaymentMethod({
+        id: paymentMethod.id,
         description: description.trim(),
         type: (type === 'credit' || type === 'debit' || type === 'prepaid') ? 'card' : type,
         bank_name: bankName.trim() || undefined,
@@ -168,21 +227,19 @@ export default function CreatePaymentMethodScreen() {
         due_day: dueDay ? parseInt(dueDay, 10) : undefined,
         closing_day: closingDay ? parseInt(closingDay, 10) : undefined,
         expiration_date: convertExpirationDate(expirationDate),
-        company_id: companyId,
-        created_by: profile.id,
         is_active: isActive,
       });
 
       success(
         'Sucesso',
-        'Método de pagamento criado com sucesso!',
+        'Método de pagamento atualizado com sucesso!',
         () => router.back()
       );
     } catch (err: any) {
-      console.error('Erro ao criar método de pagamento:', err);
+      console.error('Erro ao atualizar método de pagamento:', err);
       error(
         'Erro',
-        err.message || 'Não foi possível criar o método de pagamento. Tente novamente.'
+        err.message || 'Não foi possível atualizar o método de pagamento. Tente novamente.'
       );
     } finally {
       setLoading(false);
@@ -202,7 +259,7 @@ export default function CreatePaymentMethodScreen() {
   // Determina o label do botão principal
   const getPrimaryButtonLabel = (): string => {
     const totalSteps = getTotalSteps();
-    return currentStep < totalSteps ? 'Próximo' : 'Salvar';
+    return currentStep < totalSteps ? 'Próximo' : 'Salvar Alterações';
   };
 
   useEffect(() => {
@@ -217,14 +274,20 @@ export default function CreatePaymentMethodScreen() {
     }
   }, [type]);
 
-  useEffect(() => {
-    if (currentStep === 3) {
-      setFlag('mastercard');
-    }
-  }, [currentStep]);
-
   const showCardFields = type === 'credit' || type === 'debit' || type === 'prepaid';
   const showDueDays = type === 'credit';
+
+  // Tela de loading inicial
+  if (initialLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <HeaderSecundary />
+        <LoadingContainer>
+          <ActivityIndicator size="large" color="#c43edf" />
+        </LoadingContainer>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -237,7 +300,7 @@ export default function CreatePaymentMethodScreen() {
         enableOnAndroid={true}
         enableAutomaticScroll={true}
       >
-        <PageTitle>Adicionar Método de Pagamento</PageTitle>
+        <PageTitle>Editar Método de Pagamento</PageTitle>
 
         {/* Indicador de Steps */}
         <StepIndicator currentStep={currentStep} totalSteps={getTotalSteps()} />

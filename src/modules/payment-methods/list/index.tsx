@@ -56,9 +56,12 @@ export default function PaymentMethodsListScreen() {
     loadPaymentMethods();
   }, [loadPaymentMethods]);
 
-  const handleCardPress = (method: PaymentMethod) => {
+  const handleCardPress = (id: string) => {
     // TODO: Navegar para tela de detalhes/edição
-    console.log('Card pressionado:', method);
+    router.push({
+      pathname: '/edit-payment-method',
+      params: { id }
+    });
   };
 
   const handleAddPress = () => {
@@ -108,7 +111,7 @@ export default function PaymentMethodsListScreen() {
                 <PaymentMethodCard 
                   key={method.id} 
                   paymentMethod={method}
-                  onPress={() => handleCardPress(method)}
+                  onPress={() => handleCardPress(method.id)}
                 />
               ))
             )}
