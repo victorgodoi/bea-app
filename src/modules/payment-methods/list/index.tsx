@@ -63,14 +63,14 @@ export default function PaymentMethodsListScreen() {
   const handleCardPress = (id: string) => {
     // TODO: Navegar para tela de detalhes/edição
     router.push({
-      pathname: '/edit-payment-method',
+      pathname: '/payment-methods/edit',
       params: { id }
     });
   };
 
   const handleAddPress = () => {
     router.push({
-      pathname: '/create-payment-method',
+      pathname: '/payment-methods/create',
       params: { 
         companyId: companyId || '',
       }

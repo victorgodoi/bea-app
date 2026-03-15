@@ -21,7 +21,7 @@ function TabLayoutContent() {
   const handleLogout = async () => {
     await setUser(null);
     closeDrawer();
-    router.replace('/auth');
+    router.replace('/auth/' as any);
   };
 
   const sidebar = (
@@ -31,7 +31,7 @@ function TabLayoutContent() {
         <TouchableOpacity style={styles.drawerItem} onPress={() => {
           closeDrawer();
           router.push({
-            pathname: '/edit-profile',
+            pathname: '/profile/edit',
             params: { 
               name: profile?.name || '',
               email: profile?.email || user?.email || '',
@@ -47,7 +47,7 @@ function TabLayoutContent() {
         <TouchableOpacity style={styles.drawerItem} onPress={() => {
           closeDrawer();
           router.push({
-            pathname: '/payment-methods',
+            pathname: '/payment-methods/' as any,
             params: { 
               companyId: profile?.company_id || '',
             }
