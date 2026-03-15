@@ -3,8 +3,9 @@ import { useNotification } from '@/src/contexts/NotificationContext';
 import { getAllPaymentMethods } from '@/src/services/payment-methods.service';
 import { PaymentMethod } from '@/src/types/payment-methods.types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView } from 'react-native';
 import {
   Container,
@@ -47,9 +48,12 @@ export default function PaymentMethodsListScreen() {
     }
   }, [error, companyId, params?.companyId]);
 
-  useEffect(() => {
-    loadPaymentMethods();
-  }, [loadPaymentMethods]);
+  // Recarrega a lista sempre que a tela ganhar foco
+  useFocusEffect(
+    useCallback(() => {
+      loadPaymentMethods();
+    }, [loadPaymentMethods])
+  );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
