@@ -8,12 +8,12 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView } from 'react-native';
 import {
-    Container,
-    ContentContainer,
-    EmptyStateContainer,
-    EmptyStateIcon,
-    EmptyStateText,
-    LoadingContainer,
+  Container,
+  ContentContainer,
+  EmptyStateContainer,
+  EmptyStateIcon,
+  EmptyStateText,
+  LoadingContainer,
 } from './styleDependentsList';
 
 export default function DependentsListScreen() {
@@ -27,7 +27,7 @@ export default function DependentsListScreen() {
 
   const loadDependents = useCallback(async () => {
     const currentCompanyId = (params?.companyId as string) || companyId;
-    
+
     if (!currentCompanyId) {
       setLoading(false);
       setRefreshing(false);
