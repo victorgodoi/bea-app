@@ -26,7 +26,7 @@ function TabLayoutContent() {
 
   const sidebar = (
     <View style={styles.drawerContent}>
-      <View>
+      <View style={styles.drawerSpacer}>
         <Text style={styles.drawerTitle}>Olá, {profile?.name}!</Text>
         <TouchableOpacity style={styles.drawerItem} onPress={() => {
           closeDrawer();
@@ -41,17 +41,19 @@ function TabLayoutContent() {
         }}>
           <Text style={styles.drawerItemText}>Meus Dados</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.drawerItem} onPress={() => {
-          closeDrawer();
-          router.push({
-            pathname: '/dependents',
-            params: { 
-              companyId: profile?.company_id || ''
-            }
-          });
-        }}>
-          <Text style={styles.drawerItemText}>Dependentes</Text>
-        </TouchableOpacity>
+        {profile?.role === "owner" && (
+          <TouchableOpacity style={styles.drawerItem} onPress={() => {
+            closeDrawer();
+            router.push({
+              pathname: '/dependents',
+              params: { 
+                companyId: profile?.company_id || ''
+              }
+            });
+          }}>
+            <Text style={styles.drawerItemText}>Dependentes</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity style={styles.drawerItem} onPress={() => {
           closeDrawer();
           router.push({
@@ -78,7 +80,7 @@ function TabLayoutContent() {
       </View>
       <View>
         <TouchableOpacity
-          style={{ paddingBottom: 30, paddingTop: 15 }}
+          style={{ marginBottom: 65, paddingVertical: 15, paddingHorizontal: 20, backgroundColor: '#ffe6e6'}}
           onPress={handleLogout}
         >
           <Text style={{ fontSize: 16, color: "red", fontWeight: "bold" }}>Deslogar</Text>
@@ -138,9 +140,11 @@ const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 20,
     paddingTop: 60,
     justifyContent: "space-between",
+  },
+  drawerSpacer: {
+    paddingHorizontal: 20,
   },
   drawerTitle: {
     fontSize: 24,

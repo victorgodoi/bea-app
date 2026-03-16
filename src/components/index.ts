@@ -4,6 +4,7 @@ export { DependentCard } from './dependentCard';
 export { Dialog } from './dialog';
 export { Header } from './header';
 export { HeaderSecundary } from './headerSecundary';
+export { InfoBox } from './infoBox';
 export { InputField } from './inputField';
 export { InputFieldNumber } from './inputFieldNumber';
 export { Notification } from './notification';
