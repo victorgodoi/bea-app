@@ -65,7 +65,15 @@ function TabLayoutContent() {
         }}>
           <Text style={styles.drawerItemText}>Métodos de Pagamento</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.drawerItem} onPress={() => {
+          closeDrawer();
+          router.push({
+            pathname: '/categories',
+            params: { 
+              companyId: profile?.company_id || '',
+            }
+          });
+        }}>
           <Text style={styles.drawerItemText}>Categorias</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
