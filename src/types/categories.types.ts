@@ -28,7 +28,7 @@ export interface SubCategory {
  */
 export interface CreateCategoryInput {
   name: string;
-  description: string;
+  description?: string;
   company_id: string;
 }
 

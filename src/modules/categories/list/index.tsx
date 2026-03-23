@@ -22,7 +22,6 @@ import {
 } from './styleCategoriesList';
 
 export default function CategoriesListScreen() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
   const params = useLocalSearchParams();
   const { error } = useNotification();
@@ -77,14 +76,12 @@ export default function CategoriesListScreen() {
   };
 
   const handleAddPress = () => {
-    // TODO: Implementar tela de criação
-    console.log('Criar nova categoria');
-    // router.push({
-    //   pathname: '/categories/create',
-    //   params: { 
-    //     companyId: companyId || '',
-    //   }
-    // });
+    router.push({
+      pathname: '/categories/create',
+      params: { 
+        companyId: companyId || profile?.company_id || '',
+      }
+    });
   };
 
   // Cálculo de estatísticas
