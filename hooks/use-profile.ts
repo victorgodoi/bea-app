@@ -1,5 +1,5 @@
 import { useAuth } from '@/src/contexts/AuthContext';
-import { getUserProfile } from '@/src/services/auth.service';
+import { getUserProfileById } from '@/src/services/auth.service';
 import type { UserProfile } from '@/src/types/user.types';
 import { useEffect, useState } from 'react';
 
@@ -14,11 +14,11 @@ export function useProfile() {
 
   useEffect(() => {
     async function loadProfile() {
-      if (user?.email) {
+      if (user?.id) {
         setLoading(true);
         setError(null);
         try {
-          const userProfile = await getUserProfile(user.email);
+          const userProfile = await getUserProfileById(user.id);
           setProfile(userProfile);
         } catch (err: any) {
           console.error('Erro ao carregar perfil:', err);

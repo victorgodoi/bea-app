@@ -1,7 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Session } from '@supabase/supabase-js';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { supabase } from '../services/supabase';
 
 interface User {
+  id?: string;
   email: string;
   name?: string;
 }
@@ -14,41 +16,40 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const USER_STORAGE_KEY = '@bea_app:user';
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUserState] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Carrega o usuário do AsyncStorage quando o app inicializa
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
-    try {
-      const storedUser = await AsyncStorage.getItem(USER_STORAGE_KEY);
-      if (storedUser) {
-        setUserState(JSON.parse(storedUser));
-      }
-    } catch (error) {
-      console.error('Erro ao carregar usuário:', error);
-    } finally {
-      setIsLoading(false);
+  const setUserFromSession = (session: Session | null) => {
+    if (session?.user) {
+      setUserState({
+        id: session.user.id,
+        email: session.user.email || '',
+        name: session.user.user_metadata?.name,
+      });
+    } else {
+      setUserState(null);
     }
   };
 
-  const setUser = async (newUser: User | null) => {
-    try {
-      if (newUser) {
-        await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(newUser));
-      } else {
-        await AsyncStorage.removeItem(USER_STORAGE_KEY);
-      }
-      setUserState(newUser);
-    } catch (error) {
-      console.error('Erro ao salvar usuário:', error);
-    }
+  useEffect(() => {
+    // Restaura sessão existente ao abrir o app
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserFromSession(session);
+      setIsLoading(false);
+    });
+
+    // Sincroniza com mudanças de autenticação (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserFromSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const setUser = (newUser: User | null) => {
+    // Mantido para compatibilidade — a sessão Supabase é a fonte de verdade
+    setUserState(prev => newUser && prev ? { ...prev, ...newUser } : newUser);
   };
 
   return (
