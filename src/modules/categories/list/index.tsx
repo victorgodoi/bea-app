@@ -67,12 +67,10 @@ export default function CategoriesListScreen() {
   }, [loadCategories]);
 
   const handleCardPress = (id: string) => {
-    // TODO: Implementar tela de edição
-    console.log('Editar categoria:', id);
-    // router.push({
-    //   pathname: '/categories/edit',
-    //   params: { id }
-    // });
+    router.push({
+      pathname: '/categories/edit',
+      params: { id },
+    });
   };
 
   const handleAddPress = () => {

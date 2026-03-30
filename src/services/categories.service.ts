@@ -1,10 +1,10 @@
 import {
-  Category,
-  CreateCategoryInput,
-  CreateSubCategoryInput,
-  SubCategory,
-  UpdateCategoryInput,
-  UpdateSubCategoryInput,
+    Category,
+    CreateCategoryInput,
+    CreateSubCategoryInput,
+    SubCategory,
+    UpdateCategoryInput,
+    UpdateSubCategoryInput,
 } from '../types/categories.types';
 import { supabase } from './supabase';
 
@@ -232,6 +232,29 @@ export async function updateSubCategory(input: UpdateSubCategoryInput): Promise<
     return data;
   } catch (error: any) {
     console.error('Erro ao atualizar subcategoria:', error);
+    throw error;
+  }
+}
+
+/**
+ * Exclui uma subcategoria
+ */
+export async function deleteSubCategory(id: string): Promise<void> {
+  if (!id) {
+    throw new Error('ID da subcategoria é obrigatório');
+  }
+
+  try {
+    const { error } = await supabase
+      .from('sub_categories')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      throw error;
+    }
+  } catch (error: any) {
+    console.error('Erro ao excluir subcategoria:', error);
     throw error;
   }
 }

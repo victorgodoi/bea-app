@@ -6,6 +6,12 @@ export const FormContainer = styled.View`
   margin-bottom: 20px;
 `;
 
+export const LoadingContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const SectionTitle = styled.Text`
   font-size: 16px;
   font-weight: 600;

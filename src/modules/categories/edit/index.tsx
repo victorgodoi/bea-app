@@ -1,43 +1,81 @@
-import { useProfile } from '@/hooks/use-profile';
 import {
-  ButtonFooter,
-  HeaderSecundary,
-  InfoBox,
-  InputField,
-  PageTitle,
-  PrimaryButton,
-  SecondaryButton,
+    ButtonFooter,
+    HeaderSecundary,
+    InfoBox,
+    InputField,
+    PageTitle,
+    PrimaryButton,
+    SecondaryButton,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
-import { createCategory, createSubCategory } from '@/src/services/categories.service';
+import {
+    createSubCategory,
+    deleteSubCategory,
+    getCategoryById,
+    updateCategory,
+} from '@/src/services/categories.service';
+import { Category, SubCategory } from '@/src/types/categories.types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
-  AddSubCategoryButton,
-  Chip,
-  ChipRemoveButton,
-  ChipText,
-  ChipsContainer,
-  FormContainer,
-  SectionTitle,
-  SubCategoryInputRow,
-  SubCategoryInputWrapper,
-} from './styleCreateCategory';
+    AddSubCategoryButton,
+    Chip,
+    ChipRemoveButton,
+    ChipText,
+    ChipsContainer,
+    FormContainer,
+    LoadingContainer,
+    SectionTitle,
+    SubCategoryInputRow,
+    SubCategoryInputWrapper,
+} from './styleEditCategory';
 
-export default function CreateCategoryScreen() {
+export default function EditCategoryScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { success, error } = useNotification();
-  const { profile } = useProfile();
 
+  const [category, setCategory] = useState<Category | null>(null);
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
+
+  const [existingSubCategories, setExistingSubCategories] = useState<SubCategory[]>([]);
+  const [deletedSubCategoryIds, setDeletedSubCategoryIds] = useState<string[]>([]);
+  const [newSubCategoryNames, setNewSubCategoryNames] = useState<string[]>([]);
   const [subCategoryInput, setSubCategoryInput] = useState<string>('');
-  const [subCategoryNames, setSubCategoryNames] = useState<string[]>([]);
+
+  const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const loadCategory = async () => {
+      try {
+        const categoryId = params.id as string;
+
+        if (!categoryId) {
+          throw new Error('ID da categoria não fornecido');
+        }
+
+        const data = await getCategoryById(categoryId);
+        setCategory(data);
+        setName(data.name);
+        setDescription(data.description || '');
+        setExistingSubCategories(data.sub_categories || []);
+      } catch (err: any) {
+        console.error('Erro ao carregar categoria:', err);
+        error('Erro', err.message || 'Não foi possível carregar a categoria.');
+        router.back();
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    loadCategory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isFormValid = (): boolean => {
     if (!name.trim() || name.trim().length < 2) return false;
@@ -50,20 +88,29 @@ export default function CreateCategoryScreen() {
       error('Erro', 'Nome da subcategoria deve ter pelo menos 2 caracteres');
       return;
     }
-    if (subCategoryNames.includes(trimmed)) {
-      error('Erro', 'Essa subcategoria já foi adicionada');
+    const allNames = [
+      ...existingSubCategories.map(s => s.name),
+      ...newSubCategoryNames,
+    ];
+    if (allNames.includes(trimmed)) {
+      error('Erro', 'Essa subcategoria já existe');
       return;
     }
-    setSubCategoryNames(prev => [...prev, trimmed]);
+    setNewSubCategoryNames(prev => [...prev, trimmed]);
     setSubCategoryInput('');
   };
 
-  const handleRemoveSubCategory = (index: number) => {
-    setSubCategoryNames(prev => prev.filter((_, i) => i !== index));
+  const handleRemoveExisting = (id: string) => {
+    setDeletedSubCategoryIds(prev => [...prev, id]);
+    setExistingSubCategories(prev => prev.filter(s => s.id !== id));
+  };
+
+  const handleRemoveNew = (index: number) => {
+    setNewSubCategoryNames(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSave = async () => {
-    if (loading) return;
+    if (loading || !category) return;
 
     if (name.trim().length < 2) {
       error('Erro', 'Nome deve ter pelo menos 2 caracteres');
@@ -73,43 +120,35 @@ export default function CreateCategoryScreen() {
     setLoading(true);
 
     try {
-      const companyId = (params.companyId as string) || profile?.company_id;
-
-      if (!companyId) {
-        throw new Error('ID da empresa não fornecido');
-      }
-
-      if (!profile?.id) {
-        throw new Error('Usuário não autenticado. Faça login novamente.');
-      }
-
-      const category = await createCategory({
+      await updateCategory({
+        id: category.id,
         name: name.trim(),
         description: description.trim() || undefined,
-        company_id: companyId,
       });
 
+      await Promise.all(deletedSubCategoryIds.map(id => deleteSubCategory(id)));
+
       await Promise.all(
-        subCategoryNames.map(subName =>
+        newSubCategoryNames.map(subName =>
           createSubCategory({
             name: subName,
             category_id: category.id,
-            category_name: category.name,
-            company_id: companyId,
+            category_name: name.trim(),
+            company_id: category.company_id,
           })
         )
       );
 
       success(
         'Sucesso',
-        'Categoria criada com sucesso!',
+        'Categoria atualizada com sucesso!',
         () => router.back()
       );
     } catch (err: any) {
-      console.error('Erro ao criar categoria:', err);
+      console.error('Erro ao atualizar categoria:', err);
       error(
         'Erro',
-        err.message || 'Não foi possível criar a categoria. Tente novamente.'
+        err.message || 'Não foi possível atualizar a categoria. Tente novamente.'
       );
     } finally {
       setLoading(false);
@@ -119,6 +158,17 @@ export default function CreateCategoryScreen() {
   const handleCancel = () => {
     router.back();
   };
+
+  if (initialLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <HeaderSecundary />
+        <LoadingContainer>
+          <ActivityIndicator size="large" color="#c43edf" />
+        </LoadingContainer>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -135,10 +185,10 @@ export default function CreateCategoryScreen() {
         enableResetScrollToCoords={false}
         keyboardOpeningTime={250}
       >
-        <PageTitle>Nova Categoria</PageTitle>
+        <PageTitle>Editar Categoria</PageTitle>
 
         <InfoBox>
-          Crie uma categoria para organizar suas despesas. Você já pode adicionar subcategorias abaixo.
+          Atualize as informações da categoria e gerencie suas subcategorias.
         </InfoBox>
 
         <FormContainer>
@@ -184,12 +234,20 @@ export default function CreateCategoryScreen() {
             </AddSubCategoryButton>
           </SubCategoryInputRow>
 
-          {subCategoryNames.length > 0 && (
+          {(existingSubCategories.length > 0 || newSubCategoryNames.length > 0) && (
             <ChipsContainer>
-              {subCategoryNames.map((subName, index) => (
-                <Chip key={index}>
+              {existingSubCategories.map((sub) => (
+                <Chip key={sub.id}>
+                  <ChipText>{sub.name}</ChipText>
+                  <ChipRemoveButton onPress={() => handleRemoveExisting(sub.id)}>
+                    <MaterialCommunityIcons name="close" size={14} color="#7b1fa2" />
+                  </ChipRemoveButton>
+                </Chip>
+              ))}
+              {newSubCategoryNames.map((subName, index) => (
+                <Chip key={`new-${index}`}>
                   <ChipText>{subName}</ChipText>
-                  <ChipRemoveButton onPress={() => handleRemoveSubCategory(index)}>
+                  <ChipRemoveButton onPress={() => handleRemoveNew(index)}>
                     <MaterialCommunityIcons name="close" size={14} color="#7b1fa2" />
                   </ChipRemoveButton>
                 </Chip>
@@ -205,7 +263,7 @@ export default function CreateCategoryScreen() {
           onPress={handleCancel}
         />
         <PrimaryButton
-          title="Criar Categoria"
+          title="Salvar"
           onPress={handleSave}
           loading={loading}
           disabled={!isFormValid() || loading}
