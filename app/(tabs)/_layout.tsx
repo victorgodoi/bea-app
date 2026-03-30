@@ -76,7 +76,15 @@ function TabLayoutContent() {
         }}>
           <Text style={styles.drawerItemText}>Categorias</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+        <TouchableOpacity style={styles.drawerItem} onPress={() => {
+          closeDrawer();
+          router.push({
+            pathname: '/purposes',
+            params: { 
+              companyId: profile?.company_id || '',
+            }
+          });
+        }}>
           <Text style={styles.drawerItemText}>Tags</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
