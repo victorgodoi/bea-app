@@ -1,50 +1,158 @@
-# Welcome to your Expo app 👋
+<p align="center">
+  <img src="./assets/images/icon.png" alt="BEA Logo" width="120" />
+</p>
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+<h1 align="center">BEA — Gestão Financeira Empresarial</h1>
 
-## Get started
+<p align="center">
+  Aplicativo mobile para controle financeiro multi-usuário, desenvolvido com React Native, Expo e Supabase.
+</p>
 
-1. Install dependencies
+<p align="center">
+  <img src="https://img.shields.io/badge/React_Native-0.81-61DAFB?style=flat-square&logo=react" />
+  <img src="https://img.shields.io/badge/Expo-54-000020?style=flat-square&logo=expo" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript" />
+  <img src="https://img.shields.io/badge/Supabase-BaaS-3ECF8E?style=flat-square&logo=supabase" />
+  <img src="https://img.shields.io/badge/Styled_Components-6-DB7093?style=flat-square&logo=styled-components" />
+</p>
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## Telas
 
-   ```bash
-   npx expo start || npx expo run:android
-   ```
+<p align="center">
+  <img src="./assets/images/capa.png" alt="Splash Screen" width="220" />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="./assets/images/categoriesList.png" alt="Lista de Categorias" width="220" />
+</p>
+<p align="center">
+  <em>Splash Screen animada &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lista de Categorias com subcategorias</em>
+</p>
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Sobre o Projeto
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+O **BEA** é uma aplicação mobile voltada para pequenas e médias empresas que precisam organizar seus gastos de forma colaborativa. O dono da empresa (**owner**) pode cadastrar dependentes (colaboradores), definir categorias de despesas, finalidades e métodos de pagamento — criando um ecossistema completo de controle financeiro com acesso por perfil.
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## Funcionalidades
 
-```bash
-npm run reset-project
+| Módulo | Descrição |
+|---|---|
+| **Autenticação** | Cadastro e login com e-mail/senha via Supabase Auth |
+| **Controle de Acesso** | Perfis distintos: `owner` (gestor) e `dependent` (colaborador) |
+| **Dependentes** | CRUD de colaboradores vinculados à empresa |
+| **Métodos de Pagamento** | Cadastro de cartões (crédito, débito, pré-pago), PIX, dinheiro e transferência — com bandeira, titular, vencimento e fechamento |
+| **Categorias** | Criação de categorias e subcategorias para classificar despesas |
+| **Finalidades** | Visualização de propósitos de gastos por empresa |
+| **Perfil** | Edição de nome e e-mail do usuário autenticado |
+| **Tema** | Suporte completo a Dark Mode e Light Mode |
+
+---
+
+## Arquitetura & Decisões Técnicas
+
+O projeto segue uma arquitetura **modular por feature**, separando responsabilidades de forma escalável:
+
+```
+src/
+├── modules/          # Telas organizadas por domínio (auth, categories, expenses…)
+│   └── [feature]/
+│       ├── index.tsx         # Lógica e UI da tela
+│       └── style[Name].ts    # Estilos com Styled Components
+├── components/       # Biblioteca de componentes reutilizáveis
+├── contexts/         # Estado global com Context API (Auth, Notification, Drawer)
+├── services/         # Camada de serviço isolada para chamadas ao Supabase
+└── types/            # Contratos TypeScript por domínio
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+**Destaques de implementação:**
 
-## Learn more
+- **Expo Router** com roteamento baseado em arquivos e tipagem de rotas (`typedRoutes`)
+- **AuthGuard** reativo — redireciona automaticamente baseado no estado de autenticação
+- **Row Level Security (RLS)** no Supabase garantindo isolamento de dados por empresa
+- **Animated Splash Screen** com `react-native-reanimated` (slide-out ao carregar)
+- **StepIndicator** para formulários multi-etapas (ex: cadastro de método de pagamento)
+- **React Compiler** habilitado (`experiments.reactCompiler: true`) para otimização automática de renders
+- Variáveis de ambiente via `.env` — nenhuma credencial hardcoded no código-fonte
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Stack Tecnológica
 
-## Join the community
+- **React Native 0.81** + **Expo 54** (New Architecture habilitada)
+- **TypeScript** em todo o projeto
+- **Expo Router 6** — file-based routing com suporte a modais, tabs e stacks
+- **Supabase** — autenticação, banco PostgreSQL e RLS
+- **Styled Components** — estilização com suporte a temas
+- **React Native Reanimated 4** — animações de alta performance
+- **Ant Design React Native** — componentes de UI
+- **Context API** — gerenciamento de estado global sem bibliotecas externas
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Como Rodar Localmente
+
+### Pré-requisitos
+
+- Node.js 18+
+- Expo CLI
+- Conta no [Supabase](https://supabase.com)
+
+### Instalação
+
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/bea-app.git
+cd bea-app
+
+# Instale as dependências
+npm install
+```
+
+### Variáveis de Ambiente
+
+Copie o arquivo de exemplo e preencha com suas credenciais do Supabase:
+
+```bash
+cp .env.example .env
+```
+
+| Variável | Descrição |
+|---|---|
+| `EXPO_PUBLIC_SUPABASE_URL` | URL do seu projeto Supabase |
+| `EXPO_PUBLIC_SUPABASE_ANON_KEY` | Chave anônima (pública) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Chave de service role (somente local) |
+| `SUPABASE_ACCESS_TOKEN` | Token de acesso à API do Supabase |
+| `TEST_USER_EMAIL` | E-mail do usuário de teste (scripts) |
+| `TEST_USER_PASSWORD` | Senha do usuário de teste (scripts) |
+
+> ⚠️ **Nunca** compartilhe ou comite `SUPABASE_SERVICE_ROLE_KEY`. Ela tem privilégios administrativos completos.
+
+### Executando
+
+```bash
+# Expo Go / simulador
+npx expo start
+
+# Android (build nativo)
+npx expo run:android
+```
+
+### Scripts de Teste
+
+```bash
+npm run test:connection   # Testa a conexão com o Supabase
+npm run test:database     # Verifica o banco de dados
+npm run test:tables       # Lista tabelas disponíveis
+npm run test:supabase     # Suite completa
+```
+
+---
+
+## Licença
+
+Distribuído sob a licença MIT.
+
