@@ -146,9 +146,3 @@ npm run test:tables       # Lista tabelas disponíveis
 npm run test:supabase     # Suite completa
 ```
 
----
-
-## Licença
-
-Distribuído sob a licença MIT.
-
