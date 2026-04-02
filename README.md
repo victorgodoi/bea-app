@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="./assets/images/icon.png" alt="BEA Logo" width="120" />
-</p>
-
 <h1 align="center">BEA — Gestão Financeira Empresarial</h1>
 
 <p align="center">
