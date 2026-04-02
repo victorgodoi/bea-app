@@ -24,6 +24,7 @@ loadEnv();
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
+const projectRef = supabaseUrl.replace('https://', '').replace('.supabase.co', '');
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function listDatabaseInfo() {
@@ -41,7 +42,7 @@ async function listDatabaseInfo() {
       console.log('   Isso é normal - você pode precisar criar suas tabelas no Supabase\n');
       
       console.log('💡 Próximos passos:');
-      console.log('   1. Acesse: https://supabase.com/dashboard/project/pizeofrpzdvvgivvtuil');
+      console.log(`   1. Acesse: https://supabase.com/dashboard/project/${projectRef}`);
       console.log('   2. Vá em "Table Editor" para criar suas tabelas');
       console.log('   3. Ou em "SQL Editor" para executar queries SQL\n');
     } else {

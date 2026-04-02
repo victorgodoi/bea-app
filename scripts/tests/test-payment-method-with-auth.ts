@@ -35,8 +35,13 @@ async function testPaymentMethodCreation() {
     // 1. Fazer login com o usuário de teste
     console.log('🔐 Fazendo login com usuário de teste...\n');
     
-    const email = 'testeapp@gmail.com';
-    const password = 'Senha123';
+    const email = process.env.TEST_USER_EMAIL || '';
+    const password = process.env.TEST_USER_PASSWORD || '';
+
+    if (!email || !password) {
+      console.log('❌ Variáveis TEST_USER_EMAIL e TEST_USER_PASSWORD não definidas no .env');
+      return;
+    }
     
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
@@ -47,7 +52,6 @@ async function testPaymentMethodCreation() {
       console.log('❌ Erro ao fazer login:', authError.message);
       console.log('\n💡 Certifique-se de que o usuário existe no Supabase Auth');
       console.log('   Email:', email);
-      console.log('   Senha:', password);
       return;
     }
 

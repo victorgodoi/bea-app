@@ -24,6 +24,7 @@ loadEnv();
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
+const projectRef = supabaseUrl.replace('https://', '').replace('.supabase.co', '');
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function listAllTables() {
@@ -131,7 +132,7 @@ async function listAllTables() {
     if (foundTables.length === 0) {
       console.log('  1. Verifique se você tem permissão para acessar as tabelas');
       console.log('  2. Confirme se as tabelas existem no dashboard:');
-      console.log('     https://supabase.com/dashboard/project/pizeofrpzdvvgivvtuil/editor');
+      console.log(`     https://supabase.com/dashboard/project/${projectRef}/editor`);
       console.log('  3. Verifique se as políticas RLS permitem acesso anônimo');
       console.log('  4. Tente fazer login antes de consultar');
     } else {
