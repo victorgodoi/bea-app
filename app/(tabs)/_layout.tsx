@@ -1,4 +1,5 @@
 import { Drawer } from '@ant-design/react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -39,6 +40,7 @@ function TabLayoutContent() {
             }
           });
         }}>
+          <MaterialCommunityIcons name="account-circle-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
           <Text style={styles.drawerItemText}>Meus Dados</Text>
         </TouchableOpacity>
         {profile?.role === "owner" && (
@@ -51,6 +53,7 @@ function TabLayoutContent() {
               }
             });
           }}>
+            <MaterialCommunityIcons name="account-group-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
             <Text style={styles.drawerItemText}>Dependentes</Text>
           </TouchableOpacity>
         )}
@@ -63,6 +66,7 @@ function TabLayoutContent() {
             }
           });
         }}>
+          <MaterialCommunityIcons name="credit-card-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
           <Text style={styles.drawerItemText}>Métodos de Pagamento</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={() => {
@@ -74,6 +78,7 @@ function TabLayoutContent() {
             }
           });
         }}>
+          <MaterialCommunityIcons name="shape-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
           <Text style={styles.drawerItemText}>Categorias</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={() => {
@@ -85,15 +90,18 @@ function TabLayoutContent() {
             }
           });
         }}>
+          <MaterialCommunityIcons name="tag-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
           <Text style={styles.drawerItemText}>Tags</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={() => {
           closeDrawer();
           router.push('/settings' as any);
         }}>
+          <MaterialCommunityIcons name="cog-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
           <Text style={styles.drawerItemText}>Configurações</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
+          <MaterialCommunityIcons name="information-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
           <Text style={styles.drawerItemText}>Sobre</Text>
         </TouchableOpacity>
       </View>
@@ -172,9 +180,14 @@ const styles = StyleSheet.create({
     color: "#c43edf",
   },
   drawerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 15,
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
+  },
+  drawerItemIcon: {
+    marginRight: 12,
   },
   drawerItemText: {
     fontSize: 16,
