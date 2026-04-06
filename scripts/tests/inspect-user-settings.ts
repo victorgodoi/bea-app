@@ -24,11 +24,16 @@ const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const supabase = createClient(supabaseUrl, serviceKey);
 
 async function run() {
-  console.log('🔍 Inspecionando tabela user_settings...\n');
-
-  const { data, error } = await supabase.from('user_settings').select('*').limit(2);
-  console.log('DATA:', JSON.stringify(data, null, 2));
-  if (error) console.log('ERROR:', JSON.stringify(error, null, 2));
+  // Get enum values
+  const schemaUrl = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/rest/v1/?apikey=${process.env.SUPABASE_SERVICE_ROLE_KEY}`;
+  const resp = await fetch(schemaUrl, { headers: { apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!, Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY!}` } });
+  const schema = await resp.json();
+  if (schema.definitions?.expenses?.properties) {
+    const props = schema.definitions.expenses.properties;
+    ['expense_type', 'payment_term'].forEach(k => {
+      if (props[k]?.enum) console.log(`${k} enum:`, props[k].enum);
+    });
+  }
 }
 
 run().catch(console.error);

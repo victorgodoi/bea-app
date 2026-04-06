@@ -5,13 +5,11 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useProfile } from '@/hooks/use-profile';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { DrawerProvider, useDrawer } from '@/src/contexts/DrawerContext';
 
 function TabLayoutContent() {
-  const colorScheme = useColorScheme();
   const { isDrawerOpen, closeDrawer } = useDrawer();
   const router = useRouter();
   const { user, setUser } = useAuth();
@@ -156,10 +154,10 @@ function TabLayoutContent() {
           }}
         />
         <Tabs.Screen
-          name="explore"
+          name="expenses"
           options={{
-            title: 'Explorar',
-            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="compass-outline" size={26} color={color} />,
+            title: 'Despesas',
+            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="receipt-text-outline" size={26} color={color} />,
           }}
         />
       </Tabs>
