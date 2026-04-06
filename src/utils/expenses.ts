@@ -12,6 +12,17 @@ export const EXPENSE_TYPE_ICONS: Record<string, string> = {
   occasional: 'lightning-bolt-outline',
 };
 
+export const EXPENSE_TYPE_OPTIONS = [
+  { label: 'Fixo', value: 'fixed' },
+  { label: 'Variável', value: 'variable' },
+  { label: 'Eventual', value: 'occasional' },
+];
+
+export const PAYMENT_TERM_OPTIONS = [
+  { label: 'À Vista', value: 'single' },
+  { label: 'Parcelado', value: 'installment' },
+];
+
 export function groupByDate(expenses: Expense[]): Record<string, Expense[]> {
   return expenses.reduce<Record<string, Expense[]>>((acc, expense) => {
     const key = expense.expense_date;
