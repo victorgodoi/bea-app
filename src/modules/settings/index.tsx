@@ -16,22 +16,12 @@ import {
 } from '@/src/services/user-settings.service';
 import { PaymentMethod } from '@/src/types/payment-methods.types';
 import { UserSettings } from '@/src/types/user-settings.types';
+import { CURRENCY_OPTIONS, LANGUAGE_OPTIONS } from '@/src/utils';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FormContainer, LoadingContainer } from './styleSettings';
-
-const LANGUAGE_OPTIONS = [
-  { label: 'Português', value: 'pt' },
-  { label: 'English', value: 'en' },
-];
-
-const CURRENCY_OPTIONS = [
-  { label: 'Real Brasileiro (BRL)', value: 'BRL' },
-  { label: 'Dólar Americano (USD)', value: 'USD' },
-  { label: 'Euro (EUR)', value: 'EUR' },
-];
 
 const NO_PAYMENT_METHOD = '__none__';
 

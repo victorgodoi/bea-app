@@ -3,6 +3,14 @@ import { AddButton, Header } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import { getExpenses } from '@/src/services/expenses.service';
 import { Expense } from '@/src/types/expenses.types';
+import {
+  EXPENSE_TYPE_ICONS,
+  EXPENSE_TYPE_LABELS,
+  MONTH_NAMES,
+  formatCurrency,
+  formatDate,
+  groupByDate,
+} from '@/src/utils';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
@@ -39,42 +47,6 @@ import {
   TypeBadge,
   TypeBadgeText,
 } from './styleExpensesList';
-
-const EXPENSE_TYPE_LABELS: Record<string, string> = {
-  fixed: 'Fixo',
-  variable: 'Variável',
-  occasional: 'Eventual',
-};
-
-const EXPENSE_TYPE_ICONS: Record<string, string> = {
-  fixed: 'sync',
-  variable: 'trending-up',
-  occasional: 'lightning-bolt-outline',
-};
-
-function formatCurrency(amount: number, currency = 'BRL') {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency }).format(amount);
-}
-
-function formatDate(dateStr: string) {
-  const [year, month, day] = dateStr.split('-');
-  return `${day}/${month}/${year}`;
-}
-
-const MONTH_NAMES = [
-  'Janeiro', 'Fevereiro', 'Março', 'Abril',
-  'Maio', 'Junho', 'Julho', 'Agosto',
-  'Setembro', 'Outubro', 'Novembro', 'Dezembro',
-];
-
-function groupByDate(expenses: Expense[]): Record<string, Expense[]> {
-  return expenses.reduce<Record<string, Expense[]>>((acc, expense) => {
-    const key = expense.expense_date;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(expense);
-    return acc;
-  }, {});
-}
 
 export default function ExpensesListScreen() {
   const router = useRouter();

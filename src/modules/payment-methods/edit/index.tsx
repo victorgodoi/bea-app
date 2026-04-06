@@ -1,28 +1,33 @@
 import { useProfile } from '@/hooks/use-profile';
 import {
-  ButtonFooter,
-  HeaderSecundary,
-  InputField,
-  InputFieldNumber,
-  PageTitle,
-  PrimaryButton,
-  SecondaryButton,
-  SelectField,
-  StepIndicator,
+    ButtonFooter,
+    HeaderSecundary,
+    InputField,
+    InputFieldNumber,
+    PageTitle,
+    PrimaryButton,
+    SecondaryButton,
+    SelectField,
+    StepIndicator,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import { getPaymentMethodById, updatePaymentMethod } from '@/src/services/payment-methods.service';
 import { CardType, FlagType, PaymentMethod, PaymentMethodType } from '@/src/types/payment-methods.types';
+import {
+    FLAG_OPTIONS,
+    PAYMENT_TYPE_OPTIONS,
+    convertExpirationDate,
+} from '@/src/utils';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, Switch } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
-  FormContainer,
-  LoadingContainer,
-  SectionTitle,
-  SwitchContainer,
-  SwitchLabel
+    FormContainer,
+    LoadingContainer,
+    SectionTitle,
+    SwitchContainer,
+    SwitchLabel
 } from './styleEditPaymentMethod';
 
 export default function EditPaymentMethodScreen() {
@@ -46,23 +51,6 @@ export default function EditPaymentMethodScreen() {
   const [expirationDate, setExpirationDate] = useState<string>('');
   const [isActive, setIsActive] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const paymentTypeOptions = [
-    { label: 'Cartão de Crédito', value: 'credit' },
-    { label: 'Cartão de Débito', value: 'debit' },
-    { label: 'Cartão Pré-pago', value: 'prepaid' },
-    { label: 'Dinheiro', value: 'cash' },
-    { label: 'PIX', value: 'pix' },
-    { label: 'Transferência Bancária', value: 'bank_transfer' },
-  ];
-
-  const flagOptions = [
-    { label: 'Visa', value: 'visa' },
-    { label: 'Mastercard', value: 'mastercard' },
-    { label: 'Elo', value: 'elo' },
-    { label: 'American Express', value: 'american_express' },
-    { label: 'Outro', value: 'other' },
-  ];
 
   // Busca os dados do método de pagamento
   useEffect(() => {
@@ -187,26 +175,6 @@ export default function EditPaymentMethodScreen() {
     }
   };
 
-  // Converte data do formato MM/AA para YYYY-MM-DD
-  const convertExpirationDate = (mmaaDate: string): string | undefined => {
-    if (!mmaaDate || mmaaDate.length !== 5) return undefined;
-    
-    const [month, year] = mmaaDate.split('/');
-    
-    // Valida se o mês está entre 01 e 12
-    const monthNum = parseInt(month, 10);
-    if (isNaN(monthNum) || monthNum < 1 || monthNum > 12) {
-      return undefined;
-    }
-    
-    const fullYear = `20${year}`; // Assume anos 20XX
-    
-    // Retorna no formato YYYY-MM-DD (primeiro dia do mês)
-    // Garante que o mês tenha sempre 2 dígitos
-    const paddedMonth = month.padStart(2, '0');
-    return `${fullYear}-${paddedMonth}-01`;
-  };
-
   const handleSave = async () => {
     if (loading || !paymentMethod) return;
     setLoading(true);
@@ -323,7 +291,7 @@ export default function EditPaymentMethodScreen() {
                 label="Tipo de Pagamento *"
                 selectedValue={type || 'credit'}
                 onValueChange={handleTypeChange}
-                options={paymentTypeOptions}
+                options={PAYMENT_TYPE_OPTIONS}
               />
 
               <SwitchContainer>
@@ -374,7 +342,7 @@ export default function EditPaymentMethodScreen() {
                 label="Bandeira do Cartão *"
                 selectedValue={flag || 'mastercard'}
                 onValueChange={(value) => setFlag(value as FlagType)}
-                options={flagOptions}
+                options={FLAG_OPTIONS}
               />
 
               <InputFieldNumber
