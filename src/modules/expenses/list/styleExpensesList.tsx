@@ -42,12 +42,14 @@ export const EmptyStateText = styled.Text`
 `;
 
 export const SummaryRow = styled.View`
-  flex-direction: row;
   gap: 10px;
   margin-bottom: 16px;
 `;
 
 export const SummaryCard = styled.View`
+  flex-direction: row;
+  gap: 12px;
+  justify-content: center;
   flex: 1;
   background-color: #fff;
   border-radius: 12px;
@@ -167,4 +169,24 @@ export const TypeBadgeText = styled.Text<TypeBadgeProps>`
   font-weight: 500;
   color: ${({ expenseType }: TypeBadgeProps) =>
     typeColors[expenseType]?.text || '#666'};
+`;
+
+export const MonthFilterBar = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 10px 20px;
+  border-bottom-width: 1px;
+  border-bottom-color: #e8e8e8;
+`;
+
+export const MonthFilterLabel = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+`;
+
+export const MonthFilterButton = styled.TouchableOpacity`
+  padding: 6px;
 `;

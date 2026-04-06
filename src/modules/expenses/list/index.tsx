@@ -28,6 +28,9 @@ import {
   ExpenseInfo,
   ExpenseMeta,
   LoadingContainer,
+  MonthFilterBar,
+  MonthFilterButton,
+  MonthFilterLabel,
   SectionHeader,
   SummaryCard,
   SummaryLabel,
@@ -58,6 +61,12 @@ function formatDate(dateStr: string) {
   return `${day}/${month}/${year}`;
 }
 
+const MONTH_NAMES = [
+  'Janeiro', 'Fevereiro', 'Março', 'Abril',
+  'Maio', 'Junho', 'Julho', 'Agosto',
+  'Setembro', 'Outubro', 'Novembro', 'Dezembro',
+];
+
 function groupByDate(expenses: Expense[]): Record<string, Expense[]> {
   return expenses.reduce<Record<string, Expense[]>>((acc, expense) => {
     const key = expense.expense_date;
@@ -75,6 +84,8 @@ export default function ExpensesListScreen() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [selectedMonth, setSelectedMonth] = useState(() => new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(() => new Date().getFullYear());
 
   const loadExpenses = useCallback(async () => {
     if (!profile?.company_id) {
@@ -117,17 +128,49 @@ export default function ExpensesListScreen() {
     });
   };
 
-  const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
-  const fixedTotal = expenses.filter(e => e.expense_type === 'fixed').reduce((sum, e) => sum + e.amount, 0);
-  const variableTotal = expenses.filter(e => e.expense_type === 'variable').reduce((sum, e) => sum + e.amount, 0);
+  const handlePrevMonth = () => {
+    if (selectedMonth === 1) {
+      setSelectedMonth(12);
+      setSelectedYear(y => y - 1);
+    } else {
+      setSelectedMonth(m => m - 1);
+    }
+  };
 
-  const grouped = groupByDate(expenses);
+  const handleNextMonth = () => {
+    if (selectedMonth === 12) {
+      setSelectedMonth(1);
+      setSelectedYear(y => y + 1);
+    } else {
+      setSelectedMonth(m => m + 1);
+    }
+  };
+
+  const monthStr = selectedMonth.toString().padStart(2, '0');
+  const filteredExpenses = expenses.filter(e =>
+    e.expense_date.startsWith(`${selectedYear}-${monthStr}`)
+  );
+
+  const totalAmount = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
+  const fixedTotal = filteredExpenses.filter(e => e.expense_type === 'fixed').reduce((sum, e) => sum + e.amount, 0);
+  const variableTotal = filteredExpenses.filter(e => e.expense_type === 'variable').reduce((sum, e) => sum + e.amount, 0);
+
+  const grouped = groupByDate(filteredExpenses);
   const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
 
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#c43edf' }}>
         <Header />
+        <MonthFilterBar>
+          <MonthFilterButton onPress={handlePrevMonth}>
+            <MaterialCommunityIcons name="chevron-left" size={26} color="#c43edf" />
+          </MonthFilterButton>
+          <MonthFilterLabel>{MONTH_NAMES[selectedMonth - 1]} {selectedYear}</MonthFilterLabel>
+          <MonthFilterButton onPress={handleNextMonth}>
+            <MaterialCommunityIcons name="chevron-right" size={26} color="#c43edf" />
+          </MonthFilterButton>
+        </MonthFilterBar>
         <LoadingContainer>
           <ActivityIndicator size="large" color="#c43edf" />
         </LoadingContainer>
@@ -140,6 +183,15 @@ export default function ExpensesListScreen() {
       <Header />
 
       <Container>
+        <MonthFilterBar>
+          <MonthFilterButton onPress={handlePrevMonth}>
+            <MaterialCommunityIcons name="chevron-left" size={26} color="#c43edf" />
+          </MonthFilterButton>
+          <MonthFilterLabel>{MONTH_NAMES[selectedMonth - 1]} {selectedYear}</MonthFilterLabel>
+          <MonthFilterButton onPress={handleNextMonth}>
+            <MaterialCommunityIcons name="chevron-right" size={26} color="#c43edf" />
+          </MonthFilterButton>
+        </MonthFilterBar>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           refreshControl={
@@ -147,7 +199,7 @@ export default function ExpensesListScreen() {
           }
         >
           <ContentContainer>
-            {expenses.length === 0 ? (
+            {filteredExpenses.length === 0 ? (
               <EmptyStateContainer>
                 <EmptyStateIcon>
                   <MaterialCommunityIcons name="receipt-text-outline" size={40} color="#c43edf" />
@@ -213,7 +265,7 @@ export default function ExpensesListScreen() {
             )}
           </ContentContainer>
         </ScrollView>
-        <AddButton onPress={handleAddPress} />
+        <AddButton onPress={handleAddPress} style={{ position: 'absolute', bottom: 20, right: 20 }} />
       </Container>
     </SafeAreaView>
   );
