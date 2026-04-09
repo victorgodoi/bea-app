@@ -8,6 +8,7 @@ export { HeaderSecundary } from './headerSecundary';
 export { InfoBox } from './infoBox';
 export { InputField } from './inputField';
 export { InputFieldNumber } from './inputFieldNumber';
+export { MonthSelector } from './monthSelector';
 export { Notification } from './notification';
 export { PageTitle } from './pageTitle';
 export { PaymentMethodCard } from './paymentMethodCard';

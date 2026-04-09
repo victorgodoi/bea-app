@@ -1,12 +1,11 @@
 import { useProfile } from '@/hooks/use-profile';
-import { AddButton, Header } from '@/src/components';
+import { AddButton, Header, MonthSelector } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import { getExpenses } from '@/src/services/expenses.service';
 import { Expense } from '@/src/types/expenses.types';
 import {
   EXPENSE_TYPE_ICONS,
   EXPENSE_TYPE_LABELS,
-  MONTH_NAMES,
   formatCurrency,
   formatDate,
   groupByDate,
@@ -21,6 +20,7 @@ import {
   ScrollView,
   View,
 } from 'react-native';
+
 import {
   Container,
   ContentContainer,
@@ -36,16 +36,14 @@ import {
   ExpenseInfo,
   ExpenseMeta,
   LoadingContainer,
-  MonthFilterBar,
-  MonthFilterButton,
-  MonthFilterLabel,
   SectionHeader,
+  SubMenu,
   SummaryCard,
   SummaryLabel,
   SummaryRow,
   SummaryValue,
   TypeBadge,
-  TypeBadgeText,
+  TypeBadgeText
 } from './styleExpensesList';
 
 export default function ExpensesListScreen() {
@@ -134,15 +132,6 @@ export default function ExpensesListScreen() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#c43edf' }}>
         <Header />
-        <MonthFilterBar>
-          <MonthFilterButton onPress={handlePrevMonth}>
-            <MaterialCommunityIcons name="chevron-left" size={26} color="#c43edf" />
-          </MonthFilterButton>
-          <MonthFilterLabel>{MONTH_NAMES[selectedMonth - 1]} {selectedYear}</MonthFilterLabel>
-          <MonthFilterButton onPress={handleNextMonth}>
-            <MaterialCommunityIcons name="chevron-right" size={26} color="#c43edf" />
-          </MonthFilterButton>
-        </MonthFilterBar>
         <LoadingContainer>
           <ActivityIndicator size="large" color="#c43edf" />
         </LoadingContainer>
@@ -155,15 +144,6 @@ export default function ExpensesListScreen() {
       <Header />
 
       <Container>
-        <MonthFilterBar>
-          <MonthFilterButton onPress={handlePrevMonth}>
-            <MaterialCommunityIcons name="chevron-left" size={26} color="#c43edf" />
-          </MonthFilterButton>
-          <MonthFilterLabel>{MONTH_NAMES[selectedMonth - 1]} {selectedYear}</MonthFilterLabel>
-          <MonthFilterButton onPress={handleNextMonth}>
-            <MaterialCommunityIcons name="chevron-right" size={26} color="#c43edf" />
-          </MonthFilterButton>
-        </MonthFilterBar>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           refreshControl={
@@ -171,6 +151,14 @@ export default function ExpensesListScreen() {
           }
         >
           <ContentContainer>
+            <SubMenu>
+              <MonthSelector
+                month={selectedMonth}
+                year={selectedYear}
+                onPrevMonth={handlePrevMonth}
+                onNextMonth={handleNextMonth}
+              />
+            </SubMenu>
             {filteredExpenses.length === 0 ? (
               <EmptyStateContainer>
                 <EmptyStateIcon>

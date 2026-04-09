@@ -6,6 +6,10 @@ export const Container = styled.View`
   background-color: #f7f7f7;
 `;
 
+export const SubMenu = styled.View`
+  margin-bottom: 16px;
+`;
+
 export const ContentContainer = styled.View`
   padding: 16px;
   padding-bottom: 46px;
@@ -171,22 +175,44 @@ export const TypeBadgeText = styled.Text<TypeBadgeProps>`
     typeColors[expenseType]?.text || '#666'};
 `;
 
-export const MonthFilterBar = styled.View`
+
+export const MonthBar = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   background-color: #fff;
-  padding: 10px 20px;
-  border-bottom-width: 1px;
-  border-bottom-color: #e8e8e8;
+  border-radius: 14px;
+  padding: 10px 16px;
+  elevation: 2;
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.07;
+  shadow-radius: 4px;
 `;
 
-export const MonthFilterLabel = styled.Text`
+export const MonthNavButton = styled.TouchableOpacity`
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background-color: #f3e8ff;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const MonthLabel = styled.Text`
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: #1a1a1a;
+  letter-spacing: 0.3px;
 `;
 
-export const MonthFilterButton = styled.TouchableOpacity`
-  padding: 6px;
+export const YearLabel = styled.Text`
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+  margin-top: 1px;
+`;
+
+export const MonthTextGroup = styled.View`
+  align-items: center;
 `;
