@@ -122,6 +122,32 @@ export default function CreateExpenseScreen() {
     setAmount(formatAmountInput(text));
   };
 
+  const dueDateFromDueDay = (dueDay: number): string => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 0-indexed
+    const todayDay = today.getDate();
+
+    // Se o dia de vencimento ainda não passou neste mês, usa o mês atual; caso contrário, próximo mês
+    const targetMonth = todayDay <= dueDay ? month : month + 1;
+    const targetDate = new Date(year, targetMonth, dueDay);
+
+    // Normaliza caso o dia não exista no mês (ex: dia 31 em fevereiro)
+    const d = String(targetDate.getDate()).padStart(2, '0');
+    const m = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const y = String(targetDate.getFullYear());
+    return `${d}/${m}/${y}`;
+  };
+
+  const handlePaymentMethodChange = (value: string) => {
+    setPaymentMethodId(value);
+    if (!value) return;
+    const pm = paymentMethods.find(p => p.id === value);
+    if (pm?.due_day) {
+      setDueDate(dueDateFromDueDay(pm.due_day));
+    }
+  };
+
   const isStepDisabled = (): boolean => {
     if (loading) return true;
     if (currentStep === 1) return !description.trim();
@@ -276,15 +302,6 @@ export default function CreateExpenseScreen() {
               mask="##/##/####"
               required
             />
-
-            <InputFieldNumber
-              label="Data de Vencimento"
-              placeholder="DD/MM/AAAA (opcional)"
-              placeholderTextColor="#999"
-              value={dueDate}
-              onChangeText={setDueDate}
-              mask="##/##/####"
-            />
           </FormContainer>
         )}
 
@@ -341,11 +358,20 @@ export default function CreateExpenseScreen() {
                 <SelectField
                   label="Método de Pagamento"
                   selectedValue={paymentMethodId}
-                  onValueChange={setPaymentMethodId}
+                  onValueChange={handlePaymentMethodChange}
                   options={[
                     { label: 'Não informado', value: '' },
                     ...paymentMethodOptions,
                   ]}
+                />
+
+                <InputFieldNumber
+                  label="Data de Vencimento"
+                  placeholder="DD/MM/AAAA (opcional)"
+                  placeholderTextColor="#999"
+                  value={dueDate}
+                  onChangeText={setDueDate}
+                  mask="##/##/####"
                 />
 
                 <InputField
