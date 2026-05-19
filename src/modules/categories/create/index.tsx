@@ -1,31 +1,30 @@
 import { useProfile } from '@/hooks/use-profile';
 import {
-  ButtonFooter,
-  HeaderSecundary,
-  InfoBox,
-  InputField,
-  PageTitle,
-  PrimaryButton,
-  SecondaryButton,
+    ButtonFooter,
+    HeaderSecundary,
+    InfoBox,
+    InputField,
+    PageTitle,
+    PrimaryButton,
+    SecondaryButton,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import { createCategory, createSubCategory } from '@/src/services/categories.service';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  AddSubCategoryButton,
-  Chip,
-  ChipRemoveButton,
-  ChipText,
-  ChipsContainer,
-  FormContainer,
-  SectionTitle,
-  SubCategoryInputRow,
-  SubCategoryInputWrapper,
+    AddSubCategoryButton,
+    Chip,
+    ChipRemoveButton,
+    ChipText,
+    ChipsContainer,
+    FormContainer,
+    SectionTitle,
+    SubCategoryInputRow,
+    SubCategoryInputWrapper,
 } from './styleCreateCategory';
 
 export default function CreateCategoryScreen() {
@@ -55,12 +54,12 @@ export default function CreateCategoryScreen() {
       error('Erro', 'Essa subcategoria já foi adicionada');
       return;
     }
-    setSubCategoryNames((prev) => [...prev, trimmed]);
+    setSubCategoryNames(prev => [...prev, trimmed]);
     setSubCategoryInput('');
   };
 
   const handleRemoveSubCategory = (index: number) => {
-    setSubCategoryNames((prev) => prev.filter((_, i) => i !== index));
+    setSubCategoryNames(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSave = async () => {
@@ -91,20 +90,27 @@ export default function CreateCategoryScreen() {
       });
 
       await Promise.all(
-        subCategoryNames.map((subName) =>
+        subCategoryNames.map(subName =>
           createSubCategory({
             name: subName,
             category_id: category.id,
             category_name: category.name,
             company_id: companyId,
-          }),
-        ),
+          })
+        )
       );
 
-      success('Sucesso', 'Categoria criada com sucesso!', () => router.back());
+      success(
+        'Sucesso',
+        'Categoria criada com sucesso!',
+        () => router.back()
+      );
     } catch (err: any) {
       console.error('Erro ao criar categoria:', err);
-      error('Erro', err.message || 'Não foi possível criar a categoria. Tente novamente.');
+      error(
+        'Erro',
+        err.message || 'Não foi possível criar a categoria. Tente novamente.'
+      );
     } finally {
       setLoading(false);
     }
@@ -132,8 +138,7 @@ export default function CreateCategoryScreen() {
         <PageTitle>Nova Categoria</PageTitle>
 
         <InfoBox>
-          Crie uma categoria para organizar suas despesas. Você já pode adicionar subcategorias
-          abaixo.
+          Crie uma categoria para organizar suas despesas. Você já pode adicionar subcategorias abaixo.
         </InfoBox>
 
         <FormContainer>
@@ -195,7 +200,10 @@ export default function CreateCategoryScreen() {
       </KeyboardAwareScrollView>
 
       <ButtonFooter>
-        <SecondaryButton title="Cancelar" onPress={handleCancel} />
+        <SecondaryButton
+          title="Cancelar"
+          onPress={handleCancel}
+        />
         <PrimaryButton
           title="Criar Categoria"
           onPress={handleSave}

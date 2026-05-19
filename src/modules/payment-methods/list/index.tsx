@@ -6,15 +6,14 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView } from 'react-native';
 import {
-  Container,
-  ContentContainer,
-  EmptyStateContainer,
-  EmptyStateIcon,
-  EmptyStateText,
-  LoadingContainer,
+    Container,
+    ContentContainer,
+    EmptyStateContainer,
+    EmptyStateIcon,
+    EmptyStateText,
+    LoadingContainer,
 } from './stylePaymentMethodsList';
 
 export default function PaymentMethodsListScreen() {
@@ -28,7 +27,7 @@ export default function PaymentMethodsListScreen() {
 
   const loadPaymentMethods = useCallback(async () => {
     const currentCompanyId = (params?.companyId as string) || companyId;
-
+    
     if (!currentCompanyId) {
       setLoading(false);
       setRefreshing(false);
@@ -36,7 +35,7 @@ export default function PaymentMethodsListScreen() {
     }
 
     if (params?.companyId) setCompanyId(params.companyId as string);
-
+    
     try {
       const data = await getAllPaymentMethods(currentCompanyId);
       setPaymentMethods(data);
@@ -53,7 +52,7 @@ export default function PaymentMethodsListScreen() {
   useFocusEffect(
     useCallback(() => {
       loadPaymentMethods();
-    }, [loadPaymentMethods]),
+    }, [loadPaymentMethods])
   );
 
   const onRefresh = useCallback(() => {
@@ -65,16 +64,16 @@ export default function PaymentMethodsListScreen() {
     // TODO: Navegar para tela de detalhes/edição
     router.push({
       pathname: '/payment-methods/edit',
-      params: { id },
+      params: { id }
     });
   };
 
   const handleAddPress = () => {
     router.push({
       pathname: '/payment-methods/create',
-      params: {
+      params: { 
         companyId: companyId || '',
-      },
+      }
     });
   };
 
@@ -113,8 +112,8 @@ export default function PaymentMethodsListScreen() {
               </EmptyStateContainer>
             ) : (
               paymentMethods.map((method) => (
-                <PaymentMethodCard
-                  key={method.id}
+                <PaymentMethodCard 
+                  key={method.id} 
                   paymentMethod={method}
                   onPress={() => handleCardPress(method.id)}
                 />

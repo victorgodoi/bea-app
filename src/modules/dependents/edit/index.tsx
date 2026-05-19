@@ -1,27 +1,29 @@
 import {
-  ButtonFooter,
-  HeaderSecundary,
-  InfoBox,
-  InputField,
-  PageTitle,
-  PrimaryButton,
-  SecondaryButton,
+    ButtonFooter,
+    HeaderSecundary,
+    InfoBox,
+    InputField,
+    PageTitle,
+    PrimaryButton,
+    SecondaryButton,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import { getDependentById, updateDependent } from '@/src/services/dependents.service';
 import { Dependent } from '@/src/types/dependents.types';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { FormContainer, LoadingContainer } from './styleEditDependent';
+import {
+    FormContainer,
+    LoadingContainer,
+} from './styleEditDependent';
 
 export default function EditDependentScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { success, error } = useNotification();
-
+  
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
   const [dependent, setDependent] = useState<Dependent | null>(null);
 
@@ -35,7 +37,7 @@ export default function EditDependentScreen() {
     const loadDependent = async () => {
       try {
         const dependentId = params.id as string;
-
+        
         if (!dependentId) {
           throw new Error('ID do dependente não fornecido');
         }
@@ -48,7 +50,10 @@ export default function EditDependentScreen() {
         setEmail(data.email || '');
       } catch (err: any) {
         console.error('Erro ao carregar dependente:', err);
-        error('Erro', err.message || 'Não foi possível carregar os dados do dependente.');
+        error(
+          'Erro',
+          err.message || 'Não foi possível carregar os dados do dependente.'
+        );
         router.back();
       } finally {
         setInitialLoading(false);
@@ -56,7 +61,7 @@ export default function EditDependentScreen() {
     };
 
     loadDependent();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   // Validações
@@ -94,10 +99,17 @@ export default function EditDependentScreen() {
         email: email.trim().toLowerCase(),
       });
 
-      success('Sucesso', 'Dependente atualizado com sucesso!', () => router.back());
+      success(
+        'Sucesso',
+        'Dependente atualizado com sucesso!',
+        () => router.back()
+      );
     } catch (err: any) {
       console.error('Erro ao atualizar dependente:', err);
-      error('Erro', err.message || 'Não foi possível atualizar o dependente. Tente novamente.');
+      error(
+        'Erro',
+        err.message || 'Não foi possível atualizar o dependente. Tente novamente.'
+      );
     } finally {
       setLoading(false);
     }
@@ -137,8 +149,7 @@ export default function EditDependentScreen() {
         <PageTitle>Editar Dependente</PageTitle>
 
         <InfoBox variant="info">
-          Altere os dados do dependente conforme necessário. A senha não pode ser alterada por aqui
-          por questões de segurança.
+          Altere os dados do dependente conforme necessário. A senha não pode ser alterada por aqui por questões de segurança.
         </InfoBox>
 
         <FormContainer>
@@ -165,9 +176,12 @@ export default function EditDependentScreen() {
           />
         </FormContainer>
       </KeyboardAwareScrollView>
-
+      
       <ButtonFooter>
-        <SecondaryButton title="Cancelar" onPress={handleCancel} />
+        <SecondaryButton 
+          title="Cancelar"
+          onPress={handleCancel}
+        />
         <PrimaryButton
           title="Salvar Alterações"
           onPress={handleSave}

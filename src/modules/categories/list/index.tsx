@@ -7,19 +7,18 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView } from 'react-native';
 import {
-  Container,
-  ContentContainer,
-  EmptyStateContainer,
-  EmptyStateIcon,
-  EmptyStateText,
-  LoadingContainer,
-  SummaryCard,
-  SummaryItem,
-  SummaryLabel,
-  SummaryValue,
+    Container,
+    ContentContainer,
+    EmptyStateContainer,
+    EmptyStateIcon,
+    EmptyStateText,
+    LoadingContainer,
+    SummaryCard,
+    SummaryItem,
+    SummaryLabel,
+    SummaryValue,
 } from './styleCategoriesList';
 
 export default function CategoriesListScreen() {
@@ -42,7 +41,7 @@ export default function CategoriesListScreen() {
     }
 
     if (params?.companyId) setCompanyId(params.companyId as string);
-
+    
     try {
       const data = await getAllCategories(currentCompanyId);
       setCategories(data);
@@ -59,7 +58,7 @@ export default function CategoriesListScreen() {
   useFocusEffect(
     useCallback(() => {
       loadCategories();
-    }, [loadCategories]),
+    }, [loadCategories])
   );
 
   const onRefresh = useCallback(() => {
@@ -77,20 +76,20 @@ export default function CategoriesListScreen() {
   const handleAddPress = () => {
     router.push({
       pathname: '/categories/create',
-      params: {
+      params: { 
         companyId: companyId || profile?.company_id || '',
-      },
+      }
     });
   };
 
   // Cálculo de estatísticas
   const totalCategories = categories.length;
   const totalSubCategories = categories.reduce(
-    (acc, cat) => acc + (cat.sub_categories?.length || 0),
-    0,
+    (acc, cat) => acc + (cat.sub_categories?.length || 0), 
+    0
   );
   const categoriesWithSubCategories = categories.filter(
-    (cat) => (cat.sub_categories?.length || 0) > 0,
+    cat => (cat.sub_categories?.length || 0) > 0
   ).length;
   const categoriesWithoutSubCategories = totalCategories - categoriesWithSubCategories;
 
@@ -117,7 +116,7 @@ export default function CategoriesListScreen() {
         >
           <ContentContainer>
             <PageTitle>Categorias</PageTitle>
-
+            
             {categories.length === 0 ? (
               <EmptyStateContainer>
                 <EmptyStateIcon>
@@ -137,19 +136,19 @@ export default function CategoriesListScreen() {
                     <SummaryLabel>Total de Categorias</SummaryLabel>
                     <SummaryValue>{totalCategories}</SummaryValue>
                   </SummaryItem>
-
+                  
                   <SummaryItem>
                     <MaterialCommunityIcons name="tag" size={24} color="#7c3aed" />
                     <SummaryLabel>Total de Subcategorias</SummaryLabel>
                     <SummaryValue>{totalSubCategories}</SummaryValue>
                   </SummaryItem>
-
+                  
                   <SummaryItem>
                     <MaterialCommunityIcons name="check-circle" size={24} color="#2e7d32" />
                     <SummaryLabel>Com Subcategorias</SummaryLabel>
                     <SummaryValue>{categoriesWithSubCategories}</SummaryValue>
                   </SummaryItem>
-
+                  
                   <SummaryItem>
                     <MaterialCommunityIcons name="alert-circle-outline" size={24} color="#c62828" />
                     <SummaryLabel>Sem Subcategorias</SummaryLabel>
@@ -159,8 +158,8 @@ export default function CategoriesListScreen() {
 
                 {/* Lista de Categorias */}
                 {categories.map((category) => (
-                  <CategoryCard
-                    key={category.id}
+                  <CategoryCard 
+                    key={category.id} 
                     category={category}
                     onPress={() => handleCardPress(category.id)}
                   />

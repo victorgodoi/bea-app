@@ -1,21 +1,29 @@
 import {
-  ButtonFooter,
-  HeaderSecundary,
-  InfoBox,
-  InputField,
-  PageTitle,
-  PrimaryButton,
-  SecondaryButton,
+    ButtonFooter,
+    HeaderSecundary,
+    InfoBox,
+    InputField,
+    PageTitle,
+    PrimaryButton,
+    SecondaryButton,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
-import { deletePurpose, getPurposeById, updatePurpose } from '@/src/services/purposes.service';
+import {
+    deletePurpose,
+    getPurposeById,
+    updatePurpose,
+} from '@/src/services/purposes.service';
 import { Purpose } from '@/src/types/purposes.types';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Switch } from 'react-native';
+import { ActivityIndicator, Alert, SafeAreaView, StyleSheet, Switch } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { FormContainer, LoadingContainer, SwitchContainer, SwitchLabel } from './styleEditPurpose';
+import {
+    FormContainer,
+    LoadingContainer,
+    SwitchContainer,
+    SwitchLabel,
+} from './styleEditPurpose';
 
 export default function EditPurposeScreen() {
   const router = useRouter();
@@ -84,8 +92,7 @@ export default function EditPurposeScreen() {
     }
   };
 
-  const handleDelete = () => {
-    Alert.alert(
+  const handleDelete = () => {    Alert.alert(
       'Excluir Tag',
       `Tem certeza que deseja excluir a tag "${purpose?.name}"? Esta ação não pode ser desfeita.`,
       [
@@ -107,7 +114,7 @@ export default function EditPurposeScreen() {
             }
           },
         },
-      ],
+      ]
     );
   };
 
@@ -139,7 +146,9 @@ export default function EditPurposeScreen() {
       >
         <PageTitle>Editar Tag</PageTitle>
 
-        <InfoBox>Atualize as informações da tag ou altere seu status de ativação.</InfoBox>
+        <InfoBox>
+          Atualize as informações da tag ou altere seu status de ativação.
+        </InfoBox>
 
         <FormContainer>
           <InputField

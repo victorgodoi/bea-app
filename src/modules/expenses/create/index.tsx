@@ -29,9 +29,8 @@ import {
 } from '@/src/utils';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { FormContainer, SectionTitle } from './styleCreateExpense';
 
 const TOTAL_STEPS = 4;
@@ -78,14 +77,17 @@ export default function CreateExpenseScreen() {
         .catch(() => error('Erro', 'Não foi possível carregar as categorias'))
         .finally(() => setLoadingCategories(false));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, profile?.company_id, categories.length]);
 
   // Carrega purposes e payment methods ao entrar no step 4
   useEffect(() => {
-    if (purposes.length === 0 && profile?.company_id) {
+    if ( purposes.length === 0 && profile?.company_id) {
       setLoadingDetails(true);
-      Promise.all([getAllPurposes(profile.company_id), getPaymentMethods(profile.company_id)])
+      Promise.all([
+        getAllPurposes(profile.company_id),
+        getPaymentMethods(profile.company_id),
+      ])
         .then(([p, pm]) => {
           setPurposes(p);
           setPaymentMethods(pm);
@@ -93,7 +95,7 @@ export default function CreateExpenseScreen() {
         .catch(() => error('Erro', 'Não foi possível carregar os detalhes'))
         .finally(() => setLoadingDetails(false));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, profile?.company_id, purposes.length]);
 
   // Reseta subcategoria ao trocar categoria
@@ -102,16 +104,16 @@ export default function CreateExpenseScreen() {
     setSubCategoryId('');
   };
 
-  const selectedCategory = categories.find((c) => c.id === categoryId);
+  const selectedCategory = categories.find(c => c.id === categoryId);
   const subCategoryOptions: { label: string; value: string }[] =
     selectedCategory?.sub_categories?.map((s: SubCategory) => ({
       label: s.name,
       value: s.id,
     })) || [];
 
-  const categoryOptions = categories.map((c) => ({ label: c.name, value: c.id }));
-  const purposeOptions = purposes.map((p) => ({ label: p.name, value: p.id }));
-  const paymentMethodOptions = paymentMethods.map((pm) => ({
+  const categoryOptions = categories.map(c => ({ label: c.name, value: c.id }));
+  const purposeOptions = purposes.map(p => ({ label: p.name, value: p.id }));
+  const paymentMethodOptions = paymentMethods.map(pm => ({
     label: pm.description,
     value: pm.id,
   }));
@@ -140,7 +142,7 @@ export default function CreateExpenseScreen() {
   const handlePaymentMethodChange = (value: string) => {
     setPaymentMethodId(value);
     if (!value) return;
-    const pm = paymentMethods.find((p) => p.id === value);
+    const pm = paymentMethods.find(p => p.id === value);
     if (pm?.due_day) {
       setDueDate(dueDateFromDueDay(pm.due_day));
     }
@@ -157,12 +159,12 @@ export default function CreateExpenseScreen() {
   };
 
   const handleNext = () => {
-    if (currentStep < TOTAL_STEPS) setCurrentStep((s) => s + 1);
+    if (currentStep < TOTAL_STEPS) setCurrentStep(s => s + 1);
   };
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setCurrentStep((s) => s - 1);
+      setCurrentStep(s => s - 1);
     } else {
       router.back();
     }
@@ -189,11 +191,11 @@ export default function CreateExpenseScreen() {
 
       const parsedDueDate = dueDate.length === 10 ? parseDateInput(dueDate) : null;
 
-      const selectedCat = categories.find((c) => c.id === categoryId);
+      const selectedCat = categories.find(c => c.id === categoryId);
       const selectedSub = selectedCat?.sub_categories?.find(
-        (s: SubCategory) => s.id === subCategoryId,
+        (s: SubCategory) => s.id === subCategoryId
       );
-      const selectedPurpose = purposes.find((p) => p.id === purposeId);
+      const selectedPurpose = purposes.find(p => p.id === purposeId);
 
       await createExpense({
         description: description.trim(),
@@ -256,14 +258,14 @@ export default function CreateExpenseScreen() {
             <SelectField
               label="Tipo de Despesa *"
               selectedValue={expenseType}
-              onValueChange={(v) => setExpenseType(v as ExpenseType)}
+              onValueChange={v => setExpenseType(v as ExpenseType)}
               options={EXPENSE_TYPE_OPTIONS}
             />
 
             <SelectField
               label="Forma de Pagamento *"
               selectedValue={paymentTerm}
-              onValueChange={(v) => setPaymentTerm(v as PaymentTerm)}
+              onValueChange={v => setPaymentTerm(v as PaymentTerm)}
               options={PAYMENT_TERM_OPTIONS}
             />
           </FormContainer>
@@ -314,7 +316,10 @@ export default function CreateExpenseScreen() {
                   label="Categoria"
                   selectedValue={categoryId}
                   onValueChange={handleCategoryChange}
-                  options={[{ label: 'Sem categoria', value: '' }, ...categoryOptions]}
+                  options={[
+                    { label: 'Sem categoria', value: '' },
+                    ...categoryOptions,
+                  ]}
                 />
 
                 {categoryId !== '' && subCategoryOptions.length > 0 && (
@@ -322,7 +327,10 @@ export default function CreateExpenseScreen() {
                     label="Subcategoria"
                     selectedValue={subCategoryId}
                     onValueChange={setSubCategoryId}
-                    options={[{ label: 'Sem subcategoria', value: '' }, ...subCategoryOptions]}
+                    options={[
+                      { label: 'Sem subcategoria', value: '' },
+                      ...subCategoryOptions,
+                    ]}
                   />
                 )}
               </>
@@ -341,14 +349,20 @@ export default function CreateExpenseScreen() {
                   label="Tag / Finalidade"
                   selectedValue={purposeId}
                   onValueChange={setPurposeId}
-                  options={[{ label: 'Nenhuma', value: '' }, ...purposeOptions]}
+                  options={[
+                    { label: 'Nenhuma', value: '' },
+                    ...purposeOptions,
+                  ]}
                 />
 
                 <SelectField
                   label="Método de Pagamento"
                   selectedValue={paymentMethodId}
                   onValueChange={handlePaymentMethodChange}
-                  options={[{ label: 'Não informado', value: '' }, ...paymentMethodOptions]}
+                  options={[
+                    { label: 'Não informado', value: '' },
+                    ...paymentMethodOptions,
+                  ]}
                 />
 
                 <InputFieldNumber
@@ -380,7 +394,11 @@ export default function CreateExpenseScreen() {
           disabled={loading}
         />
         {currentStep < TOTAL_STEPS ? (
-          <PrimaryButton title="Próximo" onPress={handleNext} disabled={isStepDisabled()} />
+          <PrimaryButton
+            title="Próximo"
+            onPress={handleNext}
+            disabled={isStepDisabled()}
+          />
         ) : (
           <PrimaryButton
             title={loading ? 'Salvando...' : 'Salvar'}
