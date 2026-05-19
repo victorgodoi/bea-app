@@ -1,3 +1,4 @@
+import { useHeaderHeight } from '@/hooks/use-header-height';
 import { useDrawer } from '@/src/contexts/DrawerContext';
 import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -7,9 +8,10 @@ import { BoxHeader } from './styleHeader';
 export const Header = () => {
   const { openDrawer } = useDrawer();
   const router = useRouter();
+  const headerHeight = useHeaderHeight();
 
   return (
-    <BoxHeader>
+    <BoxHeader height={headerHeight}>
       <TouchableOpacity onPress={openDrawer}>
         <AntDesign name="menu" size={32} color="#fff" />
       </TouchableOpacity>

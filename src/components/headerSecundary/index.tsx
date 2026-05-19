@@ -1,3 +1,4 @@
+import { useHeaderHeight } from '@/hooks/use-header-height';
 import { AntDesign } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Image, TouchableOpacity, View } from 'react-native';
@@ -5,9 +6,10 @@ import { BackButton, BoxHeader } from './styleHeaderSecundary';
 
 export const HeaderSecundary = () => {
   const router = useRouter();
+  const headerHeight = useHeaderHeight();
 
   return (
-    <BoxHeader>
+    <BoxHeader height={headerHeight}>
       <BackButton onPress={() => router.back()}>
         <AntDesign name="arrow-left" size={24} color="#fff" />
       </BackButton>

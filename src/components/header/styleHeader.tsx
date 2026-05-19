@@ -1,9 +1,13 @@
 // eslint-disable-next-line import/no-named-as-default
 import styled from 'styled-components/native';
 
-export const BoxHeader = styled.View`
+interface BoxHeaderProps {
+  height: number;
+}
+
+export const BoxHeader = styled.View<BoxHeaderProps>`
   width: 100%;
-  height: 130px;
+  height: ${({ height }) => height}px;
   background-color: #c43edf;
   display: flex;
   flex-direction: row;
