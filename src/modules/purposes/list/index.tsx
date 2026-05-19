@@ -7,7 +7,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Container,
   ContentContainer,
@@ -63,7 +64,7 @@ export default function PurposesListScreen() {
   useFocusEffect(
     useCallback(() => {
       loadPurposes();
-    }, [loadPurposes])
+    }, [loadPurposes]),
   );
 
   const onRefresh = useCallback(() => {
@@ -87,7 +88,7 @@ export default function PurposesListScreen() {
     });
   };
 
-  const totalActive = purposes.filter(p => p.is_active).length;
+  const totalActive = purposes.filter((p) => p.is_active).length;
   const totalInactive = purposes.length - totalActive;
 
   if (loading) {

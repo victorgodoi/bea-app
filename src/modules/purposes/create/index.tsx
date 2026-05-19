@@ -12,8 +12,9 @@ import { useNotification } from '@/src/contexts/NotificationContext';
 import { createPurpose } from '@/src/services/purposes.service';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FormContainer } from './styleCreatePurpose';
 
 export default function CreatePurposeScreen() {

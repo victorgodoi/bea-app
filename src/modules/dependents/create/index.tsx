@@ -12,8 +12,9 @@ import { useNotification } from '@/src/contexts/NotificationContext';
 import { createDependent } from '@/src/services/dependents.service';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FormContainer } from './styleCreateDependent';
 
 export default function CreateDependentScreen() {
@@ -71,7 +72,7 @@ export default function CreateDependentScreen() {
 
     try {
       const companyId = (params.companyId as string) || profile?.company_id;
-      
+
       if (!companyId) {
         throw new Error('ID da empresa não fornecido');
       }
@@ -90,14 +91,11 @@ export default function CreateDependentScreen() {
       success(
         'Sucesso',
         'Dependente criado com sucesso! Um email de confirmação foi enviado.',
-        () => router.back()
+        () => router.back(),
       );
     } catch (err: any) {
       console.error('Erro ao criar dependente:', err);
-      error(
-        'Erro',
-        err.message || 'Não foi possível criar o dependente. Tente novamente.'
-      );
+      error('Erro', err.message || 'Não foi possível criar o dependente. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -124,9 +122,7 @@ export default function CreateDependentScreen() {
       >
         <PageTitle>Novo Dependente</PageTitle>
 
-        <InfoBox>
-          O dependente poderá acessar o aplicativo com as credenciais cadastradas.
-        </InfoBox>
+        <InfoBox>O dependente poderá acessar o aplicativo com as credenciais cadastradas.</InfoBox>
 
         <FormContainer>
           <InputField
@@ -175,18 +171,13 @@ export default function CreateDependentScreen() {
             required
           />
           {confirmPassword.length > 0 && password !== confirmPassword && (
-            <Text style={styles.errorText}>
-              As senhas não coincidem
-            </Text>
+            <Text style={styles.errorText}>As senhas não coincidem</Text>
           )}
         </FormContainer>
       </KeyboardAwareScrollView>
-      
+
       <ButtonFooter>
-        <SecondaryButton 
-          title="Cancelar"
-          onPress={handleCancel}
-        />
+        <SecondaryButton title="Cancelar" onPress={handleCancel} />
         <PrimaryButton
           title="Criar Dependente"
           onPress={handleSave}

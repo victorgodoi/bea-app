@@ -1,6 +1,6 @@
 {
   "name": "bea-app",
-  "main": "expo-router/entry",
+  "main": "./index.js",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
@@ -56,6 +56,7 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "eslint-import-resolver-typescript": "^4.4.4",
+    "prettier": "^3.8.3",
     "tsx": "^4.21.0",
     "typescript": "~5.9.2"
   },

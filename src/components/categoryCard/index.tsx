@@ -21,10 +21,7 @@ interface CategoryCardProps extends TouchableOpacityProps {
   category: Category;
 }
 
-export const CategoryCard: React.FC<CategoryCardProps> = ({ 
-  category, 
-  ...rest 
-}) => {
+export const CategoryCard: React.FC<CategoryCardProps> = ({ category, ...rest }) => {
   const subCategoriesCount = category.sub_categories?.length || 0;
   const hasSubCategories = subCategoriesCount > 0;
 

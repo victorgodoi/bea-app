@@ -8,10 +8,10 @@ interface AddButtonProps extends TouchableOpacityProps {
   iconColor?: string;
 }
 
-export const AddButton: React.FC<AddButtonProps> = ({ 
+export const AddButton: React.FC<AddButtonProps> = ({
   iconSize = 24,
   iconColor = '#fff',
-  ...rest 
+  ...rest
 }) => {
   return (
     <Button {...rest}>

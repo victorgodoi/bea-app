@@ -11,8 +11,9 @@ import { useNotification } from '@/src/contexts/NotificationContext';
 import { updateUserProfile } from '@/src/services/auth.service';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FormContainer } from './styleEditProfile';
 
 export default function EditProfileScreen() {
@@ -61,17 +62,10 @@ export default function EditProfileScreen() {
         name: updatedProfile.name,
       });
 
-      success(
-        'Sucesso',
-        'Perfil atualizado com sucesso!',
-        () => router.back()
-      );
+      success('Sucesso', 'Perfil atualizado com sucesso!', () => router.back());
     } catch (err: any) {
       console.error('Erro ao atualizar perfil:', err);
-      error(
-        'Erro',
-        err.message || 'Não foi possível atualizar o perfil. Tente novamente.'
-      );
+      error('Erro', err.message || 'Não foi possível atualizar o perfil. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -110,16 +104,8 @@ export default function EditProfileScreen() {
         </FormContainer>
       </KeyboardAwareScrollView>
       <ButtonFooter>
-        <SecondaryButton 
-          title="Cancelar"
-          onPress={() => router.back()}
-        />
-        <PrimaryButton 
-          title="Salvar"
-          onPress={handleSave}
-          loading={loading}
-          disabled={loading}
-        />
+        <SecondaryButton title="Cancelar" onPress={() => router.back()} />
+        <PrimaryButton title="Salvar" onPress={handleSave} loading={loading} disabled={loading} />
       </ButtonFooter>
     </SafeAreaView>
   );

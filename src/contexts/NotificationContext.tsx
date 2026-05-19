@@ -25,10 +25,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const [buttonText, setButtonText] = useState('OK');
   const [onButtonPress, setOnButtonPress] = useState<(() => void) | undefined>();
 
-  const showNotification = (
-    notificationType: NotificationType,
-    options: NotificationOptions
-  ) => {
+  const showNotification = (notificationType: NotificationType, options: NotificationOptions) => {
     setType(notificationType);
     setTitle(options.title);
     setMessage(options.message);
@@ -94,10 +91,10 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 
 export function useNotification() {
   const context = useContext(NotificationContext);
-  
+
   if (!context) {
     throw new Error('useNotification must be used within a NotificationProvider');
   }
-  
+
   return context;
 }

@@ -2,11 +2,11 @@ import { MONTH_NAMES } from '@/src/utils';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import {
-    MonthBar,
-    MonthLabel,
-    MonthNavButton,
-    MonthTextGroup,
-    YearLabel,
+  MonthBar,
+  MonthLabel,
+  MonthNavButton,
+  MonthTextGroup,
+  YearLabel,
 } from './styleMonthSelector';
 
 interface MonthSelectorProps {

@@ -18,8 +18,7 @@ export const DropdownButton = styled.View<{ isOpen?: boolean }>`
   border-radius: 12px;
   padding: 16px;
   border-width: 1px;
-  border-color: ${(props: { isOpen?: boolean }) => 
-    props.isOpen ? '#c43edf' : '#e0e0e0'};
+  border-color: ${(props: { isOpen?: boolean }) => (props.isOpen ? '#c43edf' : '#e0e0e0')};
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -67,15 +66,13 @@ export const OptionItem = styled.View<{ selected?: boolean }>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: ${(props: { selected?: boolean }) => 
+  background-color: ${(props: { selected?: boolean }) =>
     props.selected ? '#f3e5f5' : 'transparent'};
 `;
 
 export const OptionText = styled.Text<{ selected?: boolean }>`
   font-size: 16px;
-  color: ${(props: { selected?: boolean }) => 
-    props.selected ? '#c43edf' : '#333'};
-  font-weight: ${(props: { selected?: boolean }) => 
-    props.selected ? '600' : '400'};
+  color: ${(props: { selected?: boolean }) => (props.selected ? '#c43edf' : '#333')};
+  font-weight: ${(props: { selected?: boolean }) => (props.selected ? '600' : '400')};
   flex: 1;
 `;

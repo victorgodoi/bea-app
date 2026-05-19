@@ -13,5 +13,5 @@ export default function Index() {
     );
   }
 
-  return <Redirect href={user ? '/(tabs)' : '/auth/' as any} />;
+  return <Redirect href={user ? '/(tabs)' : ('/auth/' as any)} />;
 }

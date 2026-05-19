@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react';
 import { Modal } from 'react-native';
-import {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
+import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import {
   Backdrop,
   ButtonStyled,
@@ -78,12 +74,7 @@ export function Notification({
   };
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="none"
-      onRequestClose={onClose}
-    >
+    <Modal transparent visible={visible} animationType="none" onRequestClose={onClose}>
       <Overlay>
         <Backdrop onPress={onClose} />
         <Container style={animatedStyle}>

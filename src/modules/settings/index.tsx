@@ -1,26 +1,24 @@
 import { useProfile } from '@/hooks/use-profile';
 import {
-    ButtonFooter,
-    HeaderSecundary,
-    InfoBox,
-    PageTitle,
-    PrimaryButton,
-    SecondaryButton,
-    SelectField,
+  ButtonFooter,
+  HeaderSecundary,
+  InfoBox,
+  PageTitle,
+  PrimaryButton,
+  SecondaryButton,
+  SelectField,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import { getPaymentMethods } from '@/src/services/payment-methods.service';
-import {
-    getUserSettingsByUserId,
-    updateUserSettings,
-} from '@/src/services/user-settings.service';
+import { getUserSettingsByUserId, updateUserSettings } from '@/src/services/user-settings.service';
 import { PaymentMethod } from '@/src/types/payment-methods.types';
 import { UserSettings } from '@/src/types/user-settings.types';
 import { CURRENCY_OPTIONS, LANGUAGE_OPTIONS } from '@/src/utils';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { FormContainer, LoadingContainer } from './styleSettings';
 
 const NO_PAYMENT_METHOD = '__none__';
@@ -72,7 +70,7 @@ export default function SettingsScreen() {
 
   const paymentMethodOptions = [
     { label: 'Nenhum', value: NO_PAYMENT_METHOD },
-    ...paymentMethods.map(pm => ({ label: pm.description, value: pm.id })),
+    ...paymentMethods.map((pm) => ({ label: pm.description, value: pm.id })),
   ];
 
   const handleSave = async () => {

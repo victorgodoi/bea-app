@@ -1,36 +1,37 @@
 import {
-    ButtonFooter,
-    HeaderSecundary,
-    InfoBox,
-    InputField,
-    PageTitle,
-    PrimaryButton,
-    SecondaryButton,
+  ButtonFooter,
+  HeaderSecundary,
+  InfoBox,
+  InputField,
+  PageTitle,
+  PrimaryButton,
+  SecondaryButton,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import {
-    createSubCategory,
-    deleteSubCategory,
-    getCategoryById,
-    updateCategory,
+  createSubCategory,
+  deleteSubCategory,
+  getCategoryById,
+  updateCategory,
 } from '@/src/services/categories.service';
 import { Category, SubCategory } from '@/src/types/categories.types';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-    AddSubCategoryButton,
-    Chip,
-    ChipRemoveButton,
-    ChipText,
-    ChipsContainer,
-    FormContainer,
-    LoadingContainer,
-    SectionTitle,
-    SubCategoryInputRow,
-    SubCategoryInputWrapper,
+  AddSubCategoryButton,
+  Chip,
+  ChipRemoveButton,
+  ChipText,
+  ChipsContainer,
+  FormContainer,
+  LoadingContainer,
+  SectionTitle,
+  SubCategoryInputRow,
+  SubCategoryInputWrapper,
 } from './styleEditCategory';
 
 export default function EditCategoryScreen() {
@@ -88,25 +89,22 @@ export default function EditCategoryScreen() {
       error('Erro', 'Nome da subcategoria deve ter pelo menos 2 caracteres');
       return;
     }
-    const allNames = [
-      ...existingSubCategories.map(s => s.name),
-      ...newSubCategoryNames,
-    ];
+    const allNames = [...existingSubCategories.map((s) => s.name), ...newSubCategoryNames];
     if (allNames.includes(trimmed)) {
       error('Erro', 'Essa subcategoria já existe');
       return;
     }
-    setNewSubCategoryNames(prev => [...prev, trimmed]);
+    setNewSubCategoryNames((prev) => [...prev, trimmed]);
     setSubCategoryInput('');
   };
 
   const handleRemoveExisting = (id: string) => {
-    setDeletedSubCategoryIds(prev => [...prev, id]);
-    setExistingSubCategories(prev => prev.filter(s => s.id !== id));
+    setDeletedSubCategoryIds((prev) => [...prev, id]);
+    setExistingSubCategories((prev) => prev.filter((s) => s.id !== id));
   };
 
   const handleRemoveNew = (index: number) => {
-    setNewSubCategoryNames(prev => prev.filter((_, i) => i !== index));
+    setNewSubCategoryNames((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSave = async () => {
@@ -126,30 +124,23 @@ export default function EditCategoryScreen() {
         description: description.trim() || undefined,
       });
 
-      await Promise.all(deletedSubCategoryIds.map(id => deleteSubCategory(id)));
+      await Promise.all(deletedSubCategoryIds.map((id) => deleteSubCategory(id)));
 
       await Promise.all(
-        newSubCategoryNames.map(subName =>
+        newSubCategoryNames.map((subName) =>
           createSubCategory({
             name: subName,
             category_id: category.id,
             category_name: name.trim(),
             company_id: category.company_id,
-          })
-        )
+          }),
+        ),
       );
 
-      success(
-        'Sucesso',
-        'Categoria atualizada com sucesso!',
-        () => router.back()
-      );
+      success('Sucesso', 'Categoria atualizada com sucesso!', () => router.back());
     } catch (err: any) {
       console.error('Erro ao atualizar categoria:', err);
-      error(
-        'Erro',
-        err.message || 'Não foi possível atualizar a categoria. Tente novamente.'
-      );
+      error('Erro', err.message || 'Não foi possível atualizar a categoria. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -187,9 +178,7 @@ export default function EditCategoryScreen() {
       >
         <PageTitle>Editar Categoria</PageTitle>
 
-        <InfoBox>
-          Atualize as informações da categoria e gerencie suas subcategorias.
-        </InfoBox>
+        <InfoBox>Atualize as informações da categoria e gerencie suas subcategorias.</InfoBox>
 
         <FormContainer>
           <InputField
@@ -258,10 +247,7 @@ export default function EditCategoryScreen() {
       </KeyboardAwareScrollView>
 
       <ButtonFooter>
-        <SecondaryButton
-          title="Cancelar"
-          onPress={handleCancel}
-        />
+        <SecondaryButton title="Cancelar" onPress={handleCancel} />
         <PrimaryButton
           title="Salvar"
           onPress={handleSave}

@@ -7,23 +7,15 @@ interface PrimaryButtonProps extends TouchableOpacityProps {
   loading?: boolean;
 }
 
-export const PrimaryButton: React.FC<PrimaryButtonProps> = ({ 
-  title, 
-  loading = false, 
+export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
+  title,
+  loading = false,
   disabled,
-  ...rest 
+  ...rest
 }) => {
   return (
-    <Button 
-      disabled={disabled || loading} 
-      isDisabled={disabled || loading}
-      {...rest}
-    >
-      {loading ? (
-        <ActivityIndicator color="#fff" />
-      ) : (
-        <ButtonText>{title}</ButtonText>
-      )}
+    <Button disabled={disabled || loading} isDisabled={disabled || loading} {...rest}>
+      {loading ? <ActivityIndicator color="#fff" /> : <ButtonText>{title}</ButtonText>}
     </Button>
   );
 };

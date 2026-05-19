@@ -34,7 +34,7 @@ export const CardTitle = styled.Text`
 `;
 
 export const CardBadge = styled.View<BadgeProps>`
-  background-color: ${(props: BadgeProps) => props.hasSubCategories ? '#e8f5e9' : '#ffebee'};
+  background-color: ${(props: BadgeProps) => (props.hasSubCategories ? '#e8f5e9' : '#ffebee')};
   padding: 4px 12px;
   border-radius: 12px;
 `;
@@ -42,7 +42,7 @@ export const CardBadge = styled.View<BadgeProps>`
 export const CardBadgeText = styled.Text<BadgeProps>`
   font-size: 12px;
   font-weight: 600;
-  color: ${(props: BadgeProps) => props.hasSubCategories ? '#2e7d32' : '#c62828'};
+  color: ${(props: BadgeProps) => (props.hasSubCategories ? '#2e7d32' : '#c62828')};
 `;
 
 export const CardInfo = styled.View`

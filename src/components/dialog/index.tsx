@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-    Modal,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface DialogProps {
   visible: boolean;
@@ -26,7 +20,7 @@ export const Dialog: React.FC<DialogProps> = ({
   cancelText = 'Cancelar',
   onConfirm,
   onCancel,
-  showCancel = false
+  showCancel = false,
 }) => {
   return (
     <Modal
@@ -39,21 +33,15 @@ export const Dialog: React.FC<DialogProps> = ({
         <View style={styles.dialog}>
           {title && <Text style={styles.title}>{title}</Text>}
           <Text style={styles.content}>{content}</Text>
-          
+
           <View style={styles.buttonContainer}>
             {showCancel && (
-              <TouchableOpacity 
-                style={[styles.button, styles.cancelButton]} 
-                onPress={onCancel}
-              >
+              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel}>
                 <Text style={styles.cancelText}>{cancelText}</Text>
               </TouchableOpacity>
             )}
-            
-            <TouchableOpacity 
-              style={[styles.button, styles.confirmButton]} 
-              onPress={onConfirm}
-            >
+
+            <TouchableOpacity style={[styles.button, styles.confirmButton]} onPress={onConfirm}>
               <Text style={styles.confirmText}>{confirmText}</Text>
             </TouchableOpacity>
           </View>

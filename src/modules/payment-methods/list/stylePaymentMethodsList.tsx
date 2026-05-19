@@ -41,4 +41,3 @@ export const LoadingContainer = styled.View`
   align-items: center;
   padding: 40px;
 `;
-

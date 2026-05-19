@@ -3,25 +3,22 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React from 'react';
 import { TouchableOpacityProps } from 'react-native';
 import {
-    Card,
-    CardBadge,
-    CardBadgeText,
-    CardHeader,
-    CardInfo,
-    CardInfoLabel,
-    CardInfoRow,
-    CardInfoText,
-    CardTitle,
+  Card,
+  CardBadge,
+  CardBadgeText,
+  CardHeader,
+  CardInfo,
+  CardInfoLabel,
+  CardInfoRow,
+  CardInfoText,
+  CardTitle,
 } from './styleDependentCard';
 
 interface DependentCardProps extends TouchableOpacityProps {
   dependent: Dependent;
 }
 
-export const DependentCard: React.FC<DependentCardProps> = ({ 
-  dependent, 
-  ...rest 
-}) => {
+export const DependentCard: React.FC<DependentCardProps> = ({ dependent, ...rest }) => {
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR', {

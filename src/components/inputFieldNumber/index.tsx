@@ -11,15 +11,15 @@ interface InputFieldNumberProps extends Omit<TextInputProps, 'value' | 'onChange
   mask?: string; // Exemplo: "##/##" onde # representa um número
 }
 
-export const InputFieldNumber: React.FC<InputFieldNumberProps> = ({ 
-  label, 
+export const InputFieldNumber: React.FC<InputFieldNumberProps> = ({
+  label,
   required = false,
   errorMessage = 'Este campo é obrigatório',
   value,
   onChangeText,
   onBlur,
   mask,
-  ...inputProps 
+  ...inputProps
 }) => {
   const [touched, setTouched] = useState(false);
 
@@ -28,7 +28,7 @@ export const InputFieldNumber: React.FC<InputFieldNumberProps> = ({
 
     // Remove tudo que não é número
     const numbers = text.replace(/\D/g, '');
-    
+
     let maskedText = '';
     let numberIndex = 0;
 
@@ -48,10 +48,10 @@ export const InputFieldNumber: React.FC<InputFieldNumberProps> = ({
   const handleChangeText = (text: string) => {
     // Remove tudo que não é número
     const numbersOnly = text.replace(/\D/g, '');
-    
+
     // Aplica a máscara se existir
     const maskedValue = mask ? applyMask(numbersOnly) : numbersOnly;
-    
+
     onChangeText(maskedValue);
   };
 
@@ -67,7 +67,7 @@ export const InputFieldNumber: React.FC<InputFieldNumberProps> = ({
   return (
     <Container>
       <Label hasError={hasError}>{label}</Label>
-      <Input 
+      <Input
         {...inputProps}
         value={value}
         hasError={hasError}

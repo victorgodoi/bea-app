@@ -13,13 +13,8 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  SafeAreaView,
-  ScrollView,
-  View,
-} from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   Container,
@@ -43,7 +38,7 @@ import {
   SummaryRow,
   SummaryValue,
   TypeBadge,
-  TypeBadgeText
+  TypeBadgeText,
 } from './styleExpensesList';
 
 export default function ExpensesListScreen() {
@@ -79,7 +74,7 @@ export default function ExpensesListScreen() {
   useFocusEffect(
     useCallback(() => {
       loadExpenses();
-    }, [loadExpenses])
+    }, [loadExpenses]),
   );
 
   const onRefresh = useCallback(() => {
@@ -101,29 +96,33 @@ export default function ExpensesListScreen() {
   const handlePrevMonth = () => {
     if (selectedMonth === 1) {
       setSelectedMonth(12);
-      setSelectedYear(y => y - 1);
+      setSelectedYear((y) => y - 1);
     } else {
-      setSelectedMonth(m => m - 1);
+      setSelectedMonth((m) => m - 1);
     }
   };
 
   const handleNextMonth = () => {
     if (selectedMonth === 12) {
       setSelectedMonth(1);
-      setSelectedYear(y => y + 1);
+      setSelectedYear((y) => y + 1);
     } else {
-      setSelectedMonth(m => m + 1);
+      setSelectedMonth((m) => m + 1);
     }
   };
 
   const monthStr = selectedMonth.toString().padStart(2, '0');
-  const filteredExpenses = expenses.filter(e =>
-    e.expense_date.startsWith(`${selectedYear}-${monthStr}`)
+  const filteredExpenses = expenses.filter((e) =>
+    e.expense_date.startsWith(`${selectedYear}-${monthStr}`),
   );
 
   const totalAmount = filteredExpenses.reduce((sum, e) => sum + e.amount, 0);
-  const fixedTotal = filteredExpenses.filter(e => e.expense_type === 'fixed').reduce((sum, e) => sum + e.amount, 0);
-  const variableTotal = filteredExpenses.filter(e => e.expense_type === 'variable').reduce((sum, e) => sum + e.amount, 0);
+  const fixedTotal = filteredExpenses
+    .filter((e) => e.expense_type === 'fixed')
+    .reduce((sum, e) => sum + e.amount, 0);
+  const variableTotal = filteredExpenses
+    .filter((e) => e.expense_type === 'variable')
+    .reduce((sum, e) => sum + e.amount, 0);
 
   const grouped = groupByDate(filteredExpenses);
   const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
@@ -179,20 +178,24 @@ export default function ExpensesListScreen() {
                   </SummaryCard>
                   <SummaryCard>
                     <MaterialCommunityIcons name="sync" size={22} color="#2e7d32" />
-                    <SummaryValue style={{ color: '#2e7d32' }}>{formatCurrency(fixedTotal)}</SummaryValue>
+                    <SummaryValue style={{ color: '#2e7d32' }}>
+                      {formatCurrency(fixedTotal)}
+                    </SummaryValue>
                     <SummaryLabel>Fixas</SummaryLabel>
                   </SummaryCard>
                   <SummaryCard>
                     <MaterialCommunityIcons name="trending-up" size={22} color="#e65100" />
-                    <SummaryValue style={{ color: '#e65100' }}>{formatCurrency(variableTotal)}</SummaryValue>
+                    <SummaryValue style={{ color: '#e65100' }}>
+                      {formatCurrency(variableTotal)}
+                    </SummaryValue>
                     <SummaryLabel>Variáveis</SummaryLabel>
                   </SummaryCard>
                 </SummaryRow>
 
-                {sortedDates.map(date => (
+                {sortedDates.map((date) => (
                   <View key={date}>
                     <SectionHeader>{formatDate(date)}</SectionHeader>
-                    {grouped[date].map(expense => (
+                    {grouped[date].map((expense) => (
                       <ExpenseCard key={expense.id} onPress={() => handleCardPress(expense.id)}>
                         <ExpenseIconContainer>
                           <MaterialCommunityIcons
@@ -202,7 +205,9 @@ export default function ExpensesListScreen() {
                           />
                         </ExpenseIconContainer>
                         <ExpenseInfo>
-                          <ExpenseDescription numberOfLines={1}>{expense.description}</ExpenseDescription>
+                          <ExpenseDescription numberOfLines={1}>
+                            {expense.description}
+                          </ExpenseDescription>
                           <ExpenseMeta numberOfLines={1}>
                             {expense.category_name || 'Sem categoria'}
                             {expense.sub_category_name ? ` · ${expense.sub_category_name}` : ''}
@@ -214,7 +219,9 @@ export default function ExpensesListScreen() {
                           </TypeBadge>
                         </ExpenseInfo>
                         <ExpenseAmountContainer>
-                          <ExpenseAmount>{formatCurrency(expense.amount, expense.currency)}</ExpenseAmount>
+                          <ExpenseAmount>
+                            {formatCurrency(expense.amount, expense.currency)}
+                          </ExpenseAmount>
                           <ExpenseDate>{formatDate(expense.expense_date)}</ExpenseDate>
                         </ExpenseAmountContainer>
                       </ExpenseCard>
@@ -225,10 +232,11 @@ export default function ExpensesListScreen() {
             )}
           </ContentContainer>
         </ScrollView>
-        <AddButton onPress={handleAddPress} style={{ position: 'absolute', bottom: 20, right: 20 }} />
+        <AddButton
+          onPress={handleAddPress}
+          style={{ position: 'absolute', bottom: 20, right: 20 }}
+        />
       </Container>
     </SafeAreaView>
   );
 }
-
-

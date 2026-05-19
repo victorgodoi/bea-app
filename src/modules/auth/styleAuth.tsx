@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-named-as-default
-import styled from "styled-components/native";
+import styled from 'styled-components/native';
 
 export const Container = styled.KeyboardAvoidingView`
   flex: 1;
@@ -23,7 +23,7 @@ export const FormContainer = styled.View`
   border-radius: 20px;
   padding: 24px;
   border-width: 2px;
-  border-color: #FFF;
+  border-color: #fff;
   border-style: solid;
   margin-bottom: 60px;
 `;

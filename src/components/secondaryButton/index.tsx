@@ -6,10 +6,7 @@ interface SecondaryButtonProps extends TouchableOpacityProps {
   title: string;
 }
 
-export const SecondaryButton: React.FC<SecondaryButtonProps> = ({ 
-  title, 
-  ...rest 
-}) => {
+export const SecondaryButton: React.FC<SecondaryButtonProps> = ({ title, ...rest }) => {
   return (
     <Button {...rest}>
       <ButtonText>{title}</ButtonText>

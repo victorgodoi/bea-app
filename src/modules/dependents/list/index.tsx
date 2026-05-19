@@ -6,7 +6,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Container,
   ContentContainer,
@@ -35,7 +36,7 @@ export default function DependentsListScreen() {
     }
 
     if (params?.companyId) setCompanyId(params.companyId as string);
-    
+
     try {
       const data = await getAllDependents(currentCompanyId);
       setDependents(data);
@@ -52,7 +53,7 @@ export default function DependentsListScreen() {
   useFocusEffect(
     useCallback(() => {
       loadDependents();
-    }, [loadDependents])
+    }, [loadDependents]),
   );
 
   const onRefresh = useCallback(() => {
@@ -63,16 +64,16 @@ export default function DependentsListScreen() {
   const handleCardPress = (id: string) => {
     router.push({
       pathname: '/dependents/edit',
-      params: { id }
+      params: { id },
     });
   };
 
   const handleAddPress = () => {
     router.push({
       pathname: '/dependents/create',
-      params: { 
+      params: {
         companyId: companyId || '',
-      }
+      },
     });
   };
 
@@ -102,7 +103,11 @@ export default function DependentsListScreen() {
             {dependents.length === 0 ? (
               <EmptyStateContainer>
                 <EmptyStateIcon>
-                  <MaterialCommunityIcons name="account-multiple-outline" size={40} color="#c43edf" />
+                  <MaterialCommunityIcons
+                    name="account-multiple-outline"
+                    size={40}
+                    color="#c43edf"
+                  />
                 </EmptyStateIcon>
                 <EmptyStateText>
                   Nenhum dependente cadastrado.{'\n'}
@@ -111,8 +116,8 @@ export default function DependentsListScreen() {
               </EmptyStateContainer>
             ) : (
               dependents.map((dependent) => (
-                <DependentCard 
-                  key={dependent.id} 
+                <DependentCard
+                  key={dependent.id}
                   dependent={dependent}
                   onPress={() => handleCardPress(dependent.id)}
                 />

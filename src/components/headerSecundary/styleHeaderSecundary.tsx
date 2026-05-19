@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-named-as-default
-import styled from "styled-components/native";
+import styled from 'styled-components/native';
 
 export const BoxHeader = styled.View`
   width: 100%;
@@ -14,7 +14,7 @@ export const BoxHeader = styled.View`
   shadow-offset: {
     width: 0;
     height: 2;
-  };
+  }
   shadow-opacity: 0.1;
   shadow-radius: 4px;
   elevation: 3;

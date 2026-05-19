@@ -31,7 +31,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   const [dropdownLayout, setDropdownLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const buttonRef = useRef<View>(null);
 
-  const selectedOption = options.find(opt => opt.value === selectedValue);
+  const selectedOption = options.find((opt) => opt.value === selectedValue);
 
   const handleSelect = (value: string) => {
     onValueChange(value);
@@ -55,7 +55,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
           <DropdownButton isOpen={isOpen}>
             <DropdownText>{selectedOption?.label || 'Selecione...'}</DropdownText>
             <IconContainer>
-              <AntDesign name={isOpen ? "up" : "down"} size={16} color="#666" />
+              <AntDesign name={isOpen ? 'up' : 'down'} size={16} color="#666" />
             </IconContainer>
           </DropdownButton>
         </TouchableOpacity>
@@ -67,14 +67,10 @@ export const SelectField: React.FC<SelectFieldProps> = ({
         animationType="fade"
         onRequestClose={() => setIsOpen(false)}
       >
-        <TouchableOpacity
-          style={{ flex: 1 }}
-          activeOpacity={1}
-          onPress={() => setIsOpen(false)}
-        >
+        <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={() => setIsOpen(false)}>
           <ModalOverlay />
         </TouchableOpacity>
-        
+
         <ModalContent
           style={{
             position: 'absolute',
@@ -95,9 +91,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
                 activeOpacity={0.7}
               >
                 <OptionItem selected={option.value === selectedValue}>
-                  <OptionText selected={option.value === selectedValue}>
-                    {option.label}
-                  </OptionText>
+                  <OptionText selected={option.value === selectedValue}>{option.label}</OptionText>
                   {option.value === selectedValue && (
                     <AntDesign name="check" size={18} color="#c43edf" />
                   )}

@@ -1,32 +1,29 @@
 import { useProfile } from '@/hooks/use-profile';
 import {
-    ButtonFooter,
-    HeaderSecundary,
-    InputField,
-    InputFieldNumber,
-    PageTitle,
-    PrimaryButton,
-    SecondaryButton,
-    SelectField,
-    StepIndicator,
+  ButtonFooter,
+  HeaderSecundary,
+  InputField,
+  InputFieldNumber,
+  PageTitle,
+  PrimaryButton,
+  SecondaryButton,
+  SelectField,
+  StepIndicator,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import { createPaymentMethod } from '@/src/services/payment-methods.service';
 import { CardType, FlagType, PaymentMethodType } from '@/src/types/payment-methods.types';
-import {
-    FLAG_OPTIONS,
-    PAYMENT_TYPE_OPTIONS,
-    convertExpirationDate,
-} from '@/src/utils';
+import { FLAG_OPTIONS, PAYMENT_TYPE_OPTIONS, convertExpirationDate } from '@/src/utils';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Switch } from 'react-native';
+import { StyleSheet, Switch } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-    FormContainer,
-    SectionTitle,
-    SwitchContainer,
-    SwitchLabel
+  FormContainer,
+  SectionTitle,
+  SwitchContainer,
+  SwitchLabel,
 } from './styleCreatePaymentMethod';
 
 export default function CreatePaymentMethodScreen() {
@@ -70,27 +67,27 @@ export default function CreatePaymentMethodScreen() {
   // Verifica se o botão deve estar desabilitado baseado no step atual
   const isButtonDisabled = (): boolean => {
     if (loading) return true;
-    
+
     // Step 1: Validação básica (todos os tipos)
     if (currentStep === 1) {
       return !description.trim() || !type;
     }
-    
+
     // Step 2: Informações Bancárias (exceto cash)
     if (currentStep === 2 && type !== 'cash') {
       return !bankName.trim() || !ownerCard.trim();
     }
-    
+
     // Step 3: Informações do Cartão (apenas credit, debit, prepaid)
     if (currentStep === 3 && showCardFields) {
       return !flag || !expirationDate.trim() || expirationDate.length !== 5;
     }
-    
+
     // Step 4: Datas de Pagamento (apenas credit)
     if (currentStep === 4 && showDueDays) {
       return !closingDay.trim() || !dueDay.trim();
     }
-    
+
     return false;
   };
 
@@ -117,7 +114,7 @@ export default function CreatePaymentMethodScreen() {
 
     try {
       const companyId = params.companyId as string;
-      
+
       if (!companyId) {
         throw new Error('ID da empresa não fornecido');
       }
@@ -128,7 +125,7 @@ export default function CreatePaymentMethodScreen() {
 
       await createPaymentMethod({
         description: description.trim(),
-        type: (type === 'credit' || type === 'debit' || type === 'prepaid') ? 'card' : type,
+        type: type === 'credit' || type === 'debit' || type === 'prepaid' ? 'card' : type,
         bank_name: bankName.trim() || undefined,
         card_type: cardType || undefined,
         flag: flag || undefined,
@@ -141,16 +138,12 @@ export default function CreatePaymentMethodScreen() {
         is_active: isActive,
       });
 
-      success(
-        'Sucesso',
-        'Método de pagamento criado com sucesso!',
-        () => router.back()
-      );
+      success('Sucesso', 'Método de pagamento criado com sucesso!', () => router.back());
     } catch (err: any) {
       console.error('Erro ao criar método de pagamento:', err);
       error(
         'Erro',
-        err.message || 'Não foi possível criar o método de pagamento. Tente novamente.'
+        err.message || 'Não foi possível criar o método de pagamento. Tente novamente.',
       );
     } finally {
       setLoading(false);
@@ -320,12 +313,9 @@ export default function CreatePaymentMethodScreen() {
           )}
         </FormContainer>
       </KeyboardAwareScrollView>
-      
+
       <ButtonFooter>
-        <SecondaryButton 
-          title={currentStep === 1 ? 'Cancelar' : 'Voltar'}
-          onPress={handleBack}
-        />
+        <SecondaryButton title={currentStep === 1 ? 'Cancelar' : 'Voltar'} onPress={handleBack} />
         <PrimaryButton
           title={getPrimaryButtonLabel()}
           onPress={handlePrimaryAction}

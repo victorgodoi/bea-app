@@ -6,7 +6,12 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider, useAuth } from '@/src/contexts/AuthContext';
@@ -65,14 +70,17 @@ export default function RootLayout() {
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="auth" />
                 <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal', headerShown: true }} />
+                <Stack.Screen
+                  name="modal"
+                  options={{ presentation: 'modal', title: 'Modal', headerShown: true }}
+                />
               </Stack>
               <StatusBar style="auto" />
             </ThemeProvider>
           </Provider>
         </NotificationProvider>
       </AuthProvider>
-      
+
       {showSplash && (
         <Animated.View style={[styles.splashContainer, animatedStyle]}>
           <Image

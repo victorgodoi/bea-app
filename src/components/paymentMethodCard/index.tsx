@@ -18,11 +18,9 @@ interface PaymentMethodCardProps extends TouchableOpacityProps {
   paymentMethod: PaymentMethod;
 }
 
-export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({ 
-  paymentMethod, 
-  ...rest 
-}) => {
-  const paymentMethodType = paymentMethod.type === 'card' ? paymentMethod.card_type : paymentMethod.type;
+export const PaymentMethodCard: React.FC<PaymentMethodCardProps> = ({ paymentMethod, ...rest }) => {
+  const paymentMethodType =
+    paymentMethod.type === 'card' ? paymentMethod.card_type : paymentMethod.type;
 
   const getTypeLabel = (type: string): string => {
     const labels: Record<string, string> = {

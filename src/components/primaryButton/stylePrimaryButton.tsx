@@ -12,7 +12,7 @@ export const Button = styled.TouchableOpacity<ButtonProps>`
   padding: 16px;
   align-items: center;
   justify-content: center;
-  opacity: ${(props: ButtonProps) => props.isDisabled ? 0.6 : 1};
+  opacity: ${(props: ButtonProps) => (props.isDisabled ? 0.6 : 1)};
 `;
 
 export const ButtonText = styled.Text`

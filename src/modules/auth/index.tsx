@@ -10,7 +10,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useAuth } from '../../contexts/AuthContext';
@@ -21,7 +21,7 @@ import {
   InputWrapper,
   Label,
   LogoContainer,
-  TabContainer
+  TabContainer,
 } from './styleAuth';
 
 const { height } = Dimensions.get('window');
@@ -62,9 +62,9 @@ export default function AuthScreen() {
       if (isLogin) {
         // Login
         const data = await signInUser({ email, password });
-        await setUser({ 
+        await setUser({
           email: data.user?.email || email,
-          name: data.user?.user_metadata?.name 
+          name: data.user?.user_metadata?.name,
         });
         router.replace('/(tabs)');
       } else {
@@ -75,14 +75,11 @@ export default function AuthScreen() {
         }
 
         const data = await signUpUser({ name, email, password });
-        await setUser({ 
+        await setUser({
           email: data.user?.email || email,
-          name: data.user?.user_metadata?.name || name
+          name: data.user?.user_metadata?.name || name,
         });
-        showDialog(
-          'Cadastro realizado com sucesso!',
-          () => router.replace('/(tabs)')
-        );
+        showDialog('Cadastro realizado com sucesso!', () => router.replace('/(tabs)'));
       }
     } catch (error: any) {
       console.error('Erro na autenticação:', error);
@@ -117,7 +114,7 @@ export default function AuthScreen() {
       >
         <LogoContainer>
           <Image
-            source={require("../../../assets/images/iconBea.png")}
+            source={require('../../../assets/images/iconBea.png')}
             style={{ width: 100, height: 100 }}
           />
         </LogoContainer>
@@ -128,17 +125,13 @@ export default function AuthScreen() {
               style={[styles.tab, isLogin && styles.activeTab]}
               onPress={() => setIsLogin(true)}
             >
-              <Text style={[styles.tabText, isLogin && styles.activeTabText]}>
-                Login
-              </Text>
+              <Text style={[styles.tabText, isLogin && styles.activeTabText]}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.tab, !isLogin && styles.activeTab]}
               onPress={() => setIsLogin(false)}
             >
-              <Text style={[styles.tabText, !isLogin && styles.activeTabText]}>
-                Cadastro
-              </Text>
+              <Text style={[styles.tabText, !isLogin && styles.activeTabText]}>Cadastro</Text>
             </TouchableOpacity>
           </TabContainer>
 
@@ -202,17 +195,15 @@ export default function AuthScreen() {
               </TouchableOpacity>
             )} */}
 
-            <TouchableOpacity 
-              style={[styles.button, loading && styles.buttonDisabled]} 
+            <TouchableOpacity
+              style={[styles.button, loading && styles.buttonDisabled]}
               onPress={handleAuth}
               disabled={loading}
             >
               {loading ? (
                 <ActivityIndicator color="#c43edf" />
               ) : (
-                <Text style={styles.buttonText}>
-                  {isLogin ? 'Entrar' : 'Cadastrar'}
-                </Text>
+                <Text style={styles.buttonText}>{isLogin ? 'Entrar' : 'Cadastrar'}</Text>
               )}
             </TouchableOpacity>
           </InputContainer>

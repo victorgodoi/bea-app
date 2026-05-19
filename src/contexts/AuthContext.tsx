@@ -40,7 +40,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     // Sincroniza com mudanças de autenticação (login/logout)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUserFromSession(session);
     });
 
@@ -49,13 +51,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const setUser = (newUser: User | null) => {
     // Mantido para compatibilidade — a sessão Supabase é a fonte de verdade
-    setUserState(prev => newUser && prev ? { ...prev, ...newUser } : newUser);
+    setUserState((prev) => (newUser && prev ? { ...prev, ...newUser } : newUser));
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, isLoading }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ user, setUser, isLoading }}>{children}</AuthContext.Provider>
   );
 };
 

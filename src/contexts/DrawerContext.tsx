@@ -14,7 +14,7 @@ export const DrawerProvider = ({ children }: { children: ReactNode }) => {
 
   const openDrawer = () => setIsDrawerOpen(true);
   const closeDrawer = () => setIsDrawerOpen(false);
-  const toggleDrawer = () => setIsDrawerOpen(prev => !prev);
+  const toggleDrawer = () => setIsDrawerOpen((prev) => !prev);
 
   return (
     <DrawerContext.Provider value={{ isDrawerOpen, openDrawer, closeDrawer, toggleDrawer }}>

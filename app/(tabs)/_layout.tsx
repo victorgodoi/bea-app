@@ -29,85 +29,143 @@ function TabLayoutContent() {
         <Text style={styles.drawerSubtitle}>{profile?.email || user?.email}</Text>
       </View>
       <View style={styles.drawerSpacer}>
-        <TouchableOpacity style={styles.drawerItem} onPress={() => {
-          closeDrawer();
-          router.push({
-            pathname: '/profile/edit',
-            params: { 
-              name: profile?.name || '',
-              email: profile?.email || user?.email || '',
-              id: profile?.id || '',
-            }
-          });
-        }}>
-          <MaterialCommunityIcons name="account-circle-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
-          <Text style={styles.drawerItemText}>Meus Dados</Text>
-        </TouchableOpacity>
-        {profile?.role === "owner" && (
-          <TouchableOpacity style={styles.drawerItem} onPress={() => {
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={() => {
             closeDrawer();
             router.push({
-              pathname: '/dependents',
-              params: { 
-                companyId: profile?.company_id || ''
-              }
+              pathname: '/profile/edit',
+              params: {
+                name: profile?.name || '',
+                email: profile?.email || user?.email || '',
+                id: profile?.id || '',
+              },
             });
-          }}>
-            <MaterialCommunityIcons name="account-group-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
+          }}
+        >
+          <MaterialCommunityIcons
+            name="account-circle-outline"
+            size={20}
+            color="#c43edf"
+            style={styles.drawerItemIcon}
+          />
+          <Text style={styles.drawerItemText}>Meus Dados</Text>
+        </TouchableOpacity>
+        {profile?.role === 'owner' && (
+          <TouchableOpacity
+            style={styles.drawerItem}
+            onPress={() => {
+              closeDrawer();
+              router.push({
+                pathname: '/dependents',
+                params: {
+                  companyId: profile?.company_id || '',
+                },
+              });
+            }}
+          >
+            <MaterialCommunityIcons
+              name="account-group-outline"
+              size={20}
+              color="#c43edf"
+              style={styles.drawerItemIcon}
+            />
             <Text style={styles.drawerItemText}>Dependentes</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={styles.drawerItem} onPress={() => {
-          closeDrawer();
-          router.push({
-            pathname: '/payment-methods',
-            params: { 
-              companyId: profile?.company_id || '',
-            }
-          });
-        }}>
-          <MaterialCommunityIcons name="credit-card-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={() => {
+            closeDrawer();
+            router.push({
+              pathname: '/payment-methods',
+              params: {
+                companyId: profile?.company_id || '',
+              },
+            });
+          }}
+        >
+          <MaterialCommunityIcons
+            name="credit-card-outline"
+            size={20}
+            color="#c43edf"
+            style={styles.drawerItemIcon}
+          />
           <Text style={styles.drawerItemText}>Métodos de Pagamento</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.drawerItem} onPress={() => {
-          closeDrawer();
-          router.push({
-            pathname: '/categories',
-            params: { 
-              companyId: profile?.company_id || '',
-            }
-          });
-        }}>
-          <MaterialCommunityIcons name="shape-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={() => {
+            closeDrawer();
+            router.push({
+              pathname: '/categories',
+              params: {
+                companyId: profile?.company_id || '',
+              },
+            });
+          }}
+        >
+          <MaterialCommunityIcons
+            name="shape-outline"
+            size={20}
+            color="#c43edf"
+            style={styles.drawerItemIcon}
+          />
           <Text style={styles.drawerItemText}>Categorias</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.drawerItem} onPress={() => {
-          closeDrawer();
-          router.push({
-            pathname: '/purposes',
-            params: { 
-              companyId: profile?.company_id || '',
-            }
-          });
-        }}>
-          <MaterialCommunityIcons name="tag-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={() => {
+            closeDrawer();
+            router.push({
+              pathname: '/purposes',
+              params: {
+                companyId: profile?.company_id || '',
+              },
+            });
+          }}
+        >
+          <MaterialCommunityIcons
+            name="tag-outline"
+            size={20}
+            color="#c43edf"
+            style={styles.drawerItemIcon}
+          />
           <Text style={styles.drawerItemText}>Tags</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.drawerItem} onPress={() => {
-          closeDrawer();
-          router.push('/settings' as any);
-        }}>
-          <MaterialCommunityIcons name="cog-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={() => {
+            closeDrawer();
+            router.push('/settings' as any);
+          }}
+        >
+          <MaterialCommunityIcons
+            name="cog-outline"
+            size={20}
+            color="#c43edf"
+            style={styles.drawerItemIcon}
+          />
           <Text style={styles.drawerItemText}>Configurações</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.drawerItem} onPress={closeDrawer}>
-          <MaterialCommunityIcons name="information-outline" size={20} color="#c43edf" style={styles.drawerItemIcon} />
+          <MaterialCommunityIcons
+            name="information-outline"
+            size={20}
+            color="#c43edf"
+            style={styles.drawerItemIcon}
+          />
           <Text style={styles.drawerItemText}>Sobre</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.drawerFooter}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <MaterialCommunityIcons name="logout" size={20} color="#c43edf" style={styles.drawerItemIcon} />
+          <MaterialCommunityIcons
+            name="logout"
+            size={20}
+            color="#c43edf"
+            style={styles.drawerItemIcon}
+          />
           <Text style={styles.logoutText}>Sair</Text>
         </TouchableOpacity>
       </View>
@@ -145,19 +203,24 @@ function TabLayoutContent() {
             fontSize: 12,
             fontWeight: '600',
           },
-        }}>
+        }}
+      >
         <Tabs.Screen
           name="index"
           options={{
             title: 'Principal',
-            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home-outline" size={26} color={color} />,
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="home-outline" size={26} color={color} />
+            ),
           }}
         />
         <Tabs.Screen
           name="expenses"
           options={{
             title: 'Despesas',
-            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="receipt-text-outline" size={26} color={color} />,
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="receipt-text-outline" size={26} color={color} />
+            ),
           }}
         />
       </Tabs>

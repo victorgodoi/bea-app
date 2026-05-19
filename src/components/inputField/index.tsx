@@ -8,13 +8,13 @@ interface InputFieldProps extends TextInputProps {
   errorMessage?: string;
 }
 
-export const InputField: React.FC<InputFieldProps> = ({ 
-  label, 
+export const InputField: React.FC<InputFieldProps> = ({
+  label,
   required = false,
   errorMessage = 'Este campo é obrigatório',
   value,
   onBlur,
-  ...inputProps 
+  ...inputProps
 }) => {
   const [touched, setTouched] = useState(false);
 
@@ -30,12 +30,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   return (
     <Container>
       <Label hasError={hasError}>{label}</Label>
-      <Input 
-        {...inputProps}
-        value={value}
-        hasError={hasError}
-        onBlur={handleBlur}
-      />
+      <Input {...inputProps} value={value} hasError={hasError} onBlur={handleBlur} />
       {hasError && <ErrorText>{errorMessage}</ErrorText>}
     </Container>
   );

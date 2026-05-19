@@ -1,33 +1,35 @@
 import { useProfile } from '@/hooks/use-profile';
 import {
-    ButtonFooter,
-    HeaderSecundary,
-    InputField,
-    InputFieldNumber,
-    PageTitle,
-    PrimaryButton,
-    SecondaryButton,
-    SelectField,
-    StepIndicator,
+  ButtonFooter,
+  HeaderSecundary,
+  InputField,
+  InputFieldNumber,
+  PageTitle,
+  PrimaryButton,
+  SecondaryButton,
+  SelectField,
+  StepIndicator,
 } from '@/src/components';
 import { useNotification } from '@/src/contexts/NotificationContext';
 import { getPaymentMethodById, updatePaymentMethod } from '@/src/services/payment-methods.service';
-import { CardType, FlagType, PaymentMethod, PaymentMethodType } from '@/src/types/payment-methods.types';
 import {
-    FLAG_OPTIONS,
-    PAYMENT_TYPE_OPTIONS,
-    convertExpirationDate,
-} from '@/src/utils';
+  CardType,
+  FlagType,
+  PaymentMethod,
+  PaymentMethodType,
+} from '@/src/types/payment-methods.types';
+import { FLAG_OPTIONS, PAYMENT_TYPE_OPTIONS, convertExpirationDate } from '@/src/utils';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet, Switch } from 'react-native';
+import { ActivityIndicator, StyleSheet, Switch } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-    FormContainer,
-    LoadingContainer,
-    SectionTitle,
-    SwitchContainer,
-    SwitchLabel
+  FormContainer,
+  LoadingContainer,
+  SectionTitle,
+  SwitchContainer,
+  SwitchLabel,
 } from './styleEditPaymentMethod';
 
 export default function EditPaymentMethodScreen() {
@@ -57,7 +59,7 @@ export default function EditPaymentMethodScreen() {
     const loadPaymentMethod = async () => {
       try {
         const paymentMethodId = params.id as string;
-        
+
         if (!paymentMethodId) {
           throw new Error('ID do método de pagamento não fornecido');
         }
@@ -67,7 +69,7 @@ export default function EditPaymentMethodScreen() {
 
         // Preenche o formulário com os dados
         setDescription(data.description || '');
-        
+
         // Determina o tipo baseado no card_type ou type
         if (data.card_type === 'credit') {
           setType('credit');
@@ -87,7 +89,7 @@ export default function EditPaymentMethodScreen() {
         setOwnerCard(data.owner_card || '');
         setDueDay(data.due_day ? String(data.due_day) : '');
         setClosingDay(data.closing_day ? String(data.closing_day) : '');
-        
+
         // Converte a data de expiração de YYYY-MM-DD para MM/AA
         if (data.expiration_date) {
           const date = new Date(data.expiration_date);
@@ -95,14 +97,11 @@ export default function EditPaymentMethodScreen() {
           const year = String(date.getFullYear()).slice(-2);
           setExpirationDate(`${month}/${year}`);
         }
-        
+
         setIsActive(data.is_active);
       } catch (err: any) {
         console.error('Erro ao carregar método de pagamento:', err);
-        error(
-          'Erro',
-          err.message || 'Não foi possível carregar o método de pagamento.'
-        );
+        error('Erro', err.message || 'Não foi possível carregar o método de pagamento.');
         router.back();
       } finally {
         setInitialLoading(false);
@@ -110,7 +109,7 @@ export default function EditPaymentMethodScreen() {
     };
 
     loadPaymentMethod();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   // Handler para mudança de tipo de pagamento
@@ -134,27 +133,27 @@ export default function EditPaymentMethodScreen() {
   // Verifica se o botão deve estar desabilitado baseado no step atual
   const isButtonDisabled = (): boolean => {
     if (loading) return true;
-    
+
     // Step 1: Validação básica (todos os tipos)
     if (currentStep === 1) {
       return !description.trim() || !type;
     }
-    
+
     // Step 2: Informações Bancárias (exceto cash)
     if (currentStep === 2 && type !== 'cash') {
       return !bankName.trim() || !ownerCard.trim();
     }
-    
+
     // Step 3: Informações do Cartão (apenas credit, debit, prepaid)
     if (currentStep === 3 && showCardFields) {
       return !flag || !expirationDate.trim();
     }
-    
+
     // Step 4: Datas de Pagamento (apenas credit)
     if (currentStep === 4 && showDueDays) {
       return !closingDay.trim() || !dueDay.trim();
     }
-    
+
     return false;
   };
 
@@ -187,7 +186,7 @@ export default function EditPaymentMethodScreen() {
       await updatePaymentMethod({
         id: paymentMethod.id,
         description: description.trim(),
-        type: (type === 'credit' || type === 'debit' || type === 'prepaid') ? 'card' : type,
+        type: type === 'credit' || type === 'debit' || type === 'prepaid' ? 'card' : type,
         bank_name: bankName.trim() || undefined,
         card_type: cardType || undefined,
         flag: flag || undefined,
@@ -198,16 +197,12 @@ export default function EditPaymentMethodScreen() {
         is_active: isActive,
       });
 
-      success(
-        'Sucesso',
-        'Método de pagamento atualizado com sucesso!',
-        () => router.back()
-      );
+      success('Sucesso', 'Método de pagamento atualizado com sucesso!', () => router.back());
     } catch (err: any) {
       console.error('Erro ao atualizar método de pagamento:', err);
       error(
         'Erro',
-        err.message || 'Não foi possível atualizar o método de pagamento. Tente novamente.'
+        err.message || 'Não foi possível atualizar o método de pagamento. Tente novamente.',
       );
     } finally {
       setLoading(false);
@@ -383,12 +378,9 @@ export default function EditPaymentMethodScreen() {
           )}
         </FormContainer>
       </KeyboardAwareScrollView>
-      
+
       <ButtonFooter>
-        <SecondaryButton 
-          title={currentStep === 1 ? 'Cancelar' : 'Voltar'}
-          onPress={handleBack}
-        />
+        <SecondaryButton title={currentStep === 1 ? 'Cancelar' : 'Voltar'} onPress={handleBack} />
         <PrimaryButton
           title={getPrimaryButtonLabel()}
           onPress={handlePrimaryAction}

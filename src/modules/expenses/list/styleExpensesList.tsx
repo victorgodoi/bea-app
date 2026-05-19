@@ -171,10 +171,8 @@ export const TypeBadge = styled.View<TypeBadgeProps>`
 export const TypeBadgeText = styled.Text<TypeBadgeProps>`
   font-size: 11px;
   font-weight: 500;
-  color: ${({ expenseType }: TypeBadgeProps) =>
-    typeColors[expenseType]?.text || '#666'};
+  color: ${({ expenseType }: TypeBadgeProps) => typeColors[expenseType]?.text || '#666'};
 `;
-
 
 export const MonthBar = styled.View`
   flex-direction: row;

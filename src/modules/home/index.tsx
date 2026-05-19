@@ -12,7 +12,8 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, RefreshControl, SafeAreaView } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   BarFill,
   BarTrack,
@@ -69,14 +70,18 @@ export default function HomeScreen() {
   const router = useRouter();
   const { profile } = useProfile();
 
-  const [expenses, setExpenses]   = useState<Expense[]>([]);
-  const [loading, setLoading]     = useState(true);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(() => new Date().getMonth() + 1);
-  const [selectedYear,  setSelectedYear]  = useState(() => new Date().getFullYear());
+  const [selectedYear, setSelectedYear] = useState(() => new Date().getFullYear());
 
   const loadExpenses = useCallback(async () => {
-    if (!profile?.company_id) { setLoading(false); setRefreshing(false); return; }
+    if (!profile?.company_id) {
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
     try {
       const data = await getExpenses(profile.company_id);
       setExpenses(data);
@@ -88,35 +93,53 @@ export default function HomeScreen() {
     }
   }, [profile?.company_id]);
 
-  useFocusEffect(useCallback(() => { loadExpenses(); }, [loadExpenses]));
+  useFocusEffect(
+    useCallback(() => {
+      loadExpenses();
+    }, [loadExpenses]),
+  );
 
-  const onRefresh = useCallback(() => { setRefreshing(true); loadExpenses(); }, [loadExpenses]);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadExpenses();
+  }, [loadExpenses]);
 
   const handlePrevMonth = () => {
-    if (selectedMonth === 1) { setSelectedMonth(12); setSelectedYear(y => y - 1); }
-    else setSelectedMonth(m => m - 1);
+    if (selectedMonth === 1) {
+      setSelectedMonth(12);
+      setSelectedYear((y) => y - 1);
+    } else setSelectedMonth((m) => m - 1);
   };
 
   const handleNextMonth = () => {
-    if (selectedMonth === 12) { setSelectedMonth(1); setSelectedYear(y => y + 1); }
-    else setSelectedMonth(m => m + 1);
+    if (selectedMonth === 12) {
+      setSelectedMonth(1);
+      setSelectedYear((y) => y + 1);
+    } else setSelectedMonth((m) => m + 1);
   };
 
   const filtered = useMemo(() => {
     const mm = selectedMonth.toString().padStart(2, '0');
-    return expenses.filter(e => e.expense_date.startsWith(`${selectedYear}-${mm}`));
+    return expenses.filter((e) => e.expense_date.startsWith(`${selectedYear}-${mm}`));
   }, [expenses, selectedMonth, selectedYear]);
 
-  const total    = useMemo(() => filtered.reduce((s, e) => s + e.amount, 0), [filtered]);
-  const byType   = useMemo(() => ({
-    fixed:      filtered.filter(e => e.expense_type === 'fixed').reduce((s, e) => s + e.amount, 0),
-    variable:   filtered.filter(e => e.expense_type === 'variable').reduce((s, e) => s + e.amount, 0),
-    occasional: filtered.filter(e => e.expense_type === 'occasional').reduce((s, e) => s + e.amount, 0),
-  }), [filtered]);
+  const total = useMemo(() => filtered.reduce((s, e) => s + e.amount, 0), [filtered]);
+  const byType = useMemo(
+    () => ({
+      fixed: filtered.filter((e) => e.expense_type === 'fixed').reduce((s, e) => s + e.amount, 0),
+      variable: filtered
+        .filter((e) => e.expense_type === 'variable')
+        .reduce((s, e) => s + e.amount, 0),
+      occasional: filtered
+        .filter((e) => e.expense_type === 'occasional')
+        .reduce((s, e) => s + e.amount, 0),
+    }),
+    [filtered],
+  );
 
   const byCategory = useMemo(() => {
     const map: Record<string, number> = {};
-    filtered.forEach(e => {
+    filtered.forEach((e) => {
       const key = e.category_name ?? 'Sem categoria';
       map[key] = (map[key] ?? 0) + e.amount;
     });
@@ -125,9 +148,9 @@ export default function HomeScreen() {
       .slice(0, 6);
   }, [filtered]);
 
-  const recentExpenses = useMemo(() =>
-    [...filtered].sort((a, b) => b.expense_date.localeCompare(a.expense_date)).slice(0, 5),
-    [filtered]
+  const recentExpenses = useMemo(
+    () => [...filtered].sort((a, b) => b.expense_date.localeCompare(a.expense_date)).slice(0, 5),
+    [filtered],
   );
 
   return (
@@ -141,11 +164,12 @@ export default function HomeScreen() {
           </LoadingContainer>
         ) : (
           <ScrollContent
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#c43edf']} />}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#c43edf']} />
+            }
             showsVerticalScrollIndicator={false}
           >
             <ContentPadding>
-
               <MonthSelector
                 month={selectedMonth}
                 year={selectedYear}
@@ -162,31 +186,47 @@ export default function HomeScreen() {
                   <KpiInfo>
                     <KpiLabel>Total de despesas</KpiLabel>
                     <KpiValue>{formatCurrency(total)}</KpiValue>
-                    <KpiSmallLabel>{filtered.length} {filtered.length === 1 ? 'lançamento' : 'lançamentos'}</KpiSmallLabel>
+                    <KpiSmallLabel>
+                      {filtered.length} {filtered.length === 1 ? 'lançamento' : 'lançamentos'}
+                    </KpiSmallLabel>
                   </KpiInfo>
                 </KpiCardWide>
 
                 <KpiRow>
                   <KpiCard accent={TYPE_CONFIG.fixed.color}>
                     <KpiIconBox bg={TYPE_CONFIG.fixed.bg}>
-                      <MaterialCommunityIcons name={TYPE_CONFIG.fixed.icon} size={18} color={TYPE_CONFIG.fixed.color} />
+                      <MaterialCommunityIcons
+                        name={TYPE_CONFIG.fixed.icon}
+                        size={18}
+                        color={TYPE_CONFIG.fixed.color}
+                      />
                     </KpiIconBox>
                     <KpiLabel style={{ marginTop: 8 }}>Fixas</KpiLabel>
                     <KpiValue style={{ fontSize: 15 }}>{formatCurrency(byType.fixed)}</KpiValue>
                   </KpiCard>
                   <KpiCard accent={TYPE_CONFIG.variable.color}>
                     <KpiIconBox bg={TYPE_CONFIG.variable.bg}>
-                      <MaterialCommunityIcons name={TYPE_CONFIG.variable.icon} size={18} color={TYPE_CONFIG.variable.color} />
+                      <MaterialCommunityIcons
+                        name={TYPE_CONFIG.variable.icon}
+                        size={18}
+                        color={TYPE_CONFIG.variable.color}
+                      />
                     </KpiIconBox>
                     <KpiLabel style={{ marginTop: 8 }}>Variáveis</KpiLabel>
                     <KpiValue style={{ fontSize: 15 }}>{formatCurrency(byType.variable)}</KpiValue>
                   </KpiCard>
                   <KpiCard accent={TYPE_CONFIG.occasional.color}>
                     <KpiIconBox bg={TYPE_CONFIG.occasional.bg}>
-                      <MaterialCommunityIcons name={TYPE_CONFIG.occasional.icon} size={18} color={TYPE_CONFIG.occasional.color} />
+                      <MaterialCommunityIcons
+                        name={TYPE_CONFIG.occasional.icon}
+                        size={18}
+                        color={TYPE_CONFIG.occasional.color}
+                      />
                     </KpiIconBox>
                     <KpiLabel style={{ marginTop: 8 }}>Eventuais</KpiLabel>
-                    <KpiValue style={{ fontSize: 15 }}>{formatCurrency(byType.occasional)}</KpiValue>
+                    <KpiValue style={{ fontSize: 15 }}>
+                      {formatCurrency(byType.occasional)}
+                    </KpiValue>
                   </KpiCard>
                 </KpiRow>
               </KpiGrid>
@@ -197,16 +237,25 @@ export default function HomeScreen() {
                 <DistributionBar>
                   {total > 0 ? (
                     <>
-                      <DistributionSegment flex={byType.fixed / total}      color={TYPE_CONFIG.fixed.color} />
-                      <DistributionSegment flex={byType.variable / total}   color={TYPE_CONFIG.variable.color} />
-                      <DistributionSegment flex={byType.occasional / total} color={TYPE_CONFIG.occasional.color} />
+                      <DistributionSegment
+                        flex={byType.fixed / total}
+                        color={TYPE_CONFIG.fixed.color}
+                      />
+                      <DistributionSegment
+                        flex={byType.variable / total}
+                        color={TYPE_CONFIG.variable.color}
+                      />
+                      <DistributionSegment
+                        flex={byType.occasional / total}
+                        color={TYPE_CONFIG.occasional.color}
+                      />
                     </>
                   ) : (
                     <DistributionSegment flex={1} color="#e8e8e8" />
                   )}
                 </DistributionBar>
                 <DistributionLegend>
-                  {(['fixed', 'variable', 'occasional'] as const).map(type => (
+                  {(['fixed', 'variable', 'occasional'] as const).map((type) => (
                     <LegendItem key={type}>
                       <LegendDot color={TYPE_CONFIG[type].color} />
                       <LegendText>{TYPE_CONFIG[type].label}: </LegendText>
@@ -263,7 +312,12 @@ export default function HomeScreen() {
                     return (
                       <ItemComponent
                         key={expense.id}
-                        onPress={() => router.push({ pathname: '/expenses/edit' as any, params: { id: expense.id } })}
+                        onPress={() =>
+                          router.push({
+                            pathname: '/expenses/edit' as any,
+                            params: { id: expense.id },
+                          })
+                        }
                       >
                         <ExpenseIconWrap bg={cfg.bg}>
                           <MaterialCommunityIcons name={cfg.icon} size={18} color={cfg.color} />
@@ -288,7 +342,6 @@ export default function HomeScreen() {
                   })
                 )}
               </RecentCard>
-
             </ContentPadding>
           </ScrollContent>
         )}
@@ -296,4 +349,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
