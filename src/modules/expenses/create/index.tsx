@@ -15,6 +15,7 @@ import { getAllCategories } from '@/src/services/categories.service';
 import { createExpense } from '@/src/services/expenses.service';
 import { getPaymentMethods } from '@/src/services/payment-methods.service';
 import { getAllPurposes } from '@/src/services/purposes.service';
+import { getUserSettingsByUserId } from '@/src/services/user-settings.service';
 import { Category, SubCategory } from '@/src/types/categories.types';
 import { ExpenseType, PaymentTerm } from '@/src/types/expenses.types';
 import { PaymentMethod } from '@/src/types/payment-methods.types';
@@ -82,15 +83,28 @@ export default function CreateExpenseScreen() {
 
   // Carrega purposes e payment methods ao entrar no step 4
   useEffect(() => {
-    if ( purposes.length === 0 && profile?.company_id) {
+    if (purposes.length === 0 && profile?.company_id) {
       setLoadingDetails(true);
       Promise.all([
         getAllPurposes(profile.company_id),
         getPaymentMethods(profile.company_id),
+        getUserSettingsByUserId(profile.id),
       ])
-        .then(([p, pm]) => {
+        .then(([p, pm, settings]) => {
           setPurposes(p);
           setPaymentMethods(pm);
+
+          // Pré-seleciona o método de pagamento padrão configurado em Settings
+          const defaultId = settings?.default_payment_method_id;
+          if (defaultId && !paymentMethodId) {
+            const defaultPm = pm.find(m => m.id === defaultId);
+            if (defaultPm) {
+              setPaymentMethodId(defaultPm.id);
+              if (defaultPm.due_day) {
+                setDueDate(dueDateFromDueDay(defaultPm.due_day));
+              }
+            }
+          }
         })
         .catch(() => error('Erro', 'Não foi possível carregar os detalhes'))
         .finally(() => setLoadingDetails(false));
